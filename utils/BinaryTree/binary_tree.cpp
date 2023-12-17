@@ -5,10 +5,10 @@ void BinaryTree::insertWord(BinaryTreeNode *&root, string word, int pos = 0)
     if (pos == word.length())
     {
         if (root == nullptr)
-            root = new BinaryTreeNode('\\0');
+            root = new BinaryTreeNode('\0');
         else
         {
-            root->FD = new BinaryTreeNode('\\0');
+            root->FD = new BinaryTreeNode('\0');
         }
     }
     else if (root == nullptr)
