@@ -20,14 +20,19 @@ void BinaryTree::insertWord(BinaryTreeNode *&root, string word, int pos = 0)
     {
         if (root->value < word[pos])
         {
-            insertWord(root->FD, word, pos);
+            if (root->FD == nullptr || (root->FD->value > word[pos]))
+            {
+                BinaryTreeNode *newNode = new BinaryTreeNode(word[pos]);
+                newNode->FD = root->FD;
+                root->FD = newNode;
+                insertWord(newNode->FG, word, pos + 1);
+            }
+            else
+            {
+                insertWord(root->FD, word, pos);
+            }
         }
-        else if (root->value > word[pos])
-        {
-            BinaryTreeNode *newNode = new BinaryTreeNode(word[pos]);
-            newNode->FD = root;
-            insertWord(newNode->FG, word, pos + 1);
-        }
+
         else
         {
             insertWord(root->FG, word, pos + 1);
@@ -40,8 +45,11 @@ BinaryTreeNode *BinaryTree::createBinaryTreeFromDict(string dictionary[100], int
     BinaryTreeNode *root = nullptr;
     insertWord(root, "cas", 0);
     insertWord(root, "ce", 0);
-    insertWord(root, "cees", 0);
     insertWord(root, "ces", 0);
+    insertWord(root, "ci", 0);
+    insertWord(root, "de", 0);
+    insertWord(root, "des", 0);
+    insertWord(root, "do", 0);
 
     return root;
 }

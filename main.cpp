@@ -26,7 +26,7 @@ int main()
     BinaryTreeNode *root = nullptr;
     string testDict[6] = {"cas", "ces", "ci", "de", "des", "do"};
     root = tree.createBinaryTreeFromDict(testDict, 6);
-    cout << root->FG->FD->FG->FD->FG->value << endl;
+    //cout << root->FG->FD->FG->FD->FG->value << endl;
     printTree(root);
     return 0;
 }
