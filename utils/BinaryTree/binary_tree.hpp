@@ -15,10 +15,10 @@ class BinaryTree
 public:
     BinaryTreeNode *tete;
     BinaryTree() : tete(nullptr) {}
-    void insertWord(BinaryTreeNode*& root, string word, int pos=0);
-    void deleteWord(BinaryTreeNode *&root, string word, int pos=0);
-    bool isWordInTree(BinaryTreeNode *root, string word, int pos=0);
-    vector<int> getLetterPosition(BinaryTreeNode* root, char letter, string codeWord, int pos=0, vector<int>res={});
+    void insertWord(BinaryTreeNode *&root, const string &word, int pos=0);
+    void deleteWord(BinaryTreeNode *&root, const string &word, int pos=0);
+    bool isWordInTree(BinaryTreeNode *root, const string &word, int pos=0);
+    vector<int> getLetterPosition(BinaryTreeNode* root, char letter, const string &codeWord, int pos=0, vector<int>res={});
     BinaryTreeNode *createBinaryTreeFromDict(string dictionary[100], int dictSize);
 
 };

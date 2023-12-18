@@ -1,46 +1,41 @@
 #include "binary_tree.hpp"
 
-void BinaryTree::insertWord(BinaryTreeNode *&root, string word, int pos)
-{
-    if (pos == word.length())
-    {
+void BinaryTree::insertWord(BinaryTreeNode *&root, const string &word, int pos) {
+    if (pos == word.length()) {
         if (root == nullptr)
             root = new BinaryTreeNode('\0');
         else
-        {
             root->FD = new BinaryTreeNode('\0');
-        }
     }
-    else if (root == nullptr)
-    {
+    else if (root == nullptr) {
         root = new BinaryTreeNode(word[pos]);
         insertWord(root->FG, word, pos + 1);
     }
-    else
-    {
-        if (root->value < word[pos])
-        {
-            if (root->FD == nullptr || (root->FD->value > word[pos]))
-            {
+    else {
+        if (word[pos] > root->value) {
+            if (root->FD == nullptr || root->FD->value > word[pos]) {
                 BinaryTreeNode *newNode = new BinaryTreeNode(word[pos]);
                 newNode->FD = root->FD;
                 root->FD = newNode;
                 insertWord(newNode->FG, word, pos + 1);
             }
-            else
-            {
+            else {
                 insertWord(root->FD, word, pos);
             }
         }
-
-        else
-        {
+        else if (word[pos] < root->value) {
+            BinaryTreeNode *newNode = new BinaryTreeNode(word[pos]);
+            newNode->FD = root;
+            root = newNode;
+            insertWord(newNode->FG, word, pos + 1);
+        }
+        else {
             insertWord(root->FG, word, pos + 1);
         }
     }
 }
 
-bool BinaryTree::isWordInTree(BinaryTreeNode *root, string word, int pos)
+bool BinaryTree::isWordInTree(BinaryTreeNode *root, const string &word, int pos)
 {
     if (root == nullptr)
     {
@@ -63,7 +58,7 @@ bool BinaryTree::isWordInTree(BinaryTreeNode *root, string word, int pos)
     }
 }
 
-vector<int> BinaryTree::getLetterPosition(BinaryTreeNode *root, char letter, string codeWord, int pos, vector<int> res)
+vector<int> BinaryTree::getLetterPosition(BinaryTreeNode *root, char letter, const string &codeWord, int pos, vector<int> res)
 {
     if (root == nullptr)
     {
