@@ -1,6 +1,6 @@
-#include "binary_tree.h"
+#include "binary_tree.hpp"
 
-void BinaryTree::insertWord(BinaryTreeNode *&root, string word, int pos = 0)
+void BinaryTree::insertWord(BinaryTreeNode *&root, string word, int pos)
 {
     if (pos == word.length())
     {
@@ -40,16 +40,36 @@ void BinaryTree::insertWord(BinaryTreeNode *&root, string word, int pos = 0)
     }
 }
 
+vector<int> BinaryTree::getLetterPosition(BinaryTreeNode *root, char letter, string codeWord, int pos, vector<int> res)
+{
+    if (root == nullptr)
+    {
+        cout << "Empty/Invalid tree!" << endl;
+        return {};
+    }
+
+    if (pos == codeWord.length())
+    {
+        return res;
+    }
+    else if (root->value == codeWord[pos])
+    {
+        if (root->value == letter)
+            res.push_back(pos);
+        return getLetterPosition(root->FG, letter, codeWord, pos + 1, res);
+    }
+    else
+    {
+        return getLetterPosition(root->FD, letter, codeWord, pos, res);
+    }
+}
+
 BinaryTreeNode *BinaryTree::createBinaryTreeFromDict(string dictionary[100], int dictSize)
 {
     BinaryTreeNode *root = nullptr;
-    insertWord(root, "cas", 0);
-    insertWord(root, "ce", 0);
-    insertWord(root, "ces", 0);
-    insertWord(root, "ci", 0);
-    insertWord(root, "de", 0);
-    insertWord(root, "des", 0);
-    insertWord(root, "do", 0);
-
+    for (int i = 0; i < dictSize; i++)
+    {
+        insertWord(root, dictionary[i]);
+    }
     return root;
 }

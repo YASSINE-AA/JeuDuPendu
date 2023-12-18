@@ -1,8 +1,8 @@
 #include <iostream>
 #include <iomanip> 
 #include <vector>
-#include "utils/BinaryTreeNode/binary_tree_node.h"
-#include "utils/BinaryTree/binary_tree.h"
+#include "utils/BinaryTreeNode/binary_tree_node.hpp"
+#include "utils/BinaryTree/binary_tree.hpp"
 
 using namespace std;
 
@@ -23,10 +23,16 @@ int main()
 {
     int lettersFound = 0;
     BinaryTree tree = BinaryTree();
+    vector<int> testVec;
     BinaryTreeNode *root = nullptr;
     string testDict[6] = {"cas", "ces", "ci", "de", "des", "do"};
     root = tree.createBinaryTreeFromDict(testDict, 6);
-  
+    testVec = tree.getLetterPosition(root, 'd', (string) "ci");
+
+    for(int v: testVec) {
+        cout<<v<<endl;
+    }
+    //cout << testVec << endl;
     printTree(root);
     return 0;
 }

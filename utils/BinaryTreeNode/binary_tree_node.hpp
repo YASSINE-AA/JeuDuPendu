@@ -1,5 +1,5 @@
-#ifndef BINARY_TREE_NODE_H
-#define BINARY_TREE_NODE_H
+#ifndef BINARY_TREE_NODE_HPP
+#define BINARY_TREE_NODE_HPP
 
 class BinaryTreeNode {
     public:
