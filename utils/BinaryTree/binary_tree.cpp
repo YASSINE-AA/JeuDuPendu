@@ -40,6 +40,29 @@ void BinaryTree::insertWord(BinaryTreeNode *&root, string word, int pos)
     }
 }
 
+bool BinaryTree::isWordInTree(BinaryTreeNode *root, string word, int pos)
+{
+    if (root == nullptr)
+    {
+        return false;
+    }
+    else if (pos == word.length())
+    {
+        if (root->value == '\0')
+            return true;
+        else
+            return false;
+    }
+    else if (word[pos] == root->value)
+    {
+        return isWordInTree(root->FG, word, pos + 1);
+    }
+    else
+    {
+        return isWordInTree(root->FD, word, pos);
+    }
+}
+
 vector<int> BinaryTree::getLetterPosition(BinaryTreeNode *root, char letter, string codeWord, int pos, vector<int> res)
 {
     if (root == nullptr)

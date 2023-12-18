@@ -26,13 +26,11 @@ int main()
     vector<int> testVec;
     BinaryTreeNode *root = nullptr;
     string testDict[6] = {"cas", "ces", "ci", "de", "des", "do"};
-    root = tree.createBinaryTreeFromDict(testDict, 6);
-    testVec = tree.getLetterPosition(root, 'd', (string) "ci");
 
-    for(int v: testVec) {
-        cout<<v<<endl;
-    }
-    //cout << testVec << endl;
+    root = tree.createBinaryTreeFromDict(testDict, 6);
+    testVec = tree.getLetterPosition(root, 's', (string) "ces");
+    cout << tree.isWordInTree(root, "cas") << endl;
+    
     printTree(root);
     return 0;
 }
