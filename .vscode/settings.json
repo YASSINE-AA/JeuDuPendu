@@ -10,6 +10,8 @@
         "iterator": "cpp",
         "string_view": "cpp",
         "iomanip": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "list": "cpp",
+        "*.tcc": "cpp"
     }
 }
