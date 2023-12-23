@@ -7,6 +7,7 @@
 #include <iostream>
 #include <forward_list>
 #include <vector>
+#include <iomanip>
 
 using namespace std;
 
@@ -36,13 +37,17 @@ public:
         printTreeHelper(tete);
     }
 
-    vector<int> getLetterPosition(BinaryTreeNode *root, char letter, const string &codeWord, int pos = 0, vector<int> res = {});
+    vector<int> getLetterPosition(char letter, const string &codeWord) {
+        return getLetterPositionHelper(tete, letter, codeWord);
+    }
+
     BinaryTreeNode *createFromDict(vector<string> dictionary);
 
 private:
     void printTreeHelper(BinaryTreeNode *root, int space = 0, int count = 5);
     void insertWordHelper(BinaryTreeNode *&root, const string &word, int pos = 0);
     void deleteWordHelper(BinaryTreeNode *&root, string word, BinaryTreeNode *&nodeToRemove, int pos = 0);
+    vector<int> getLetterPositionHelper(BinaryTreeNode *root, char letter, const string &codeWord, int pos = 0, vector<int> res = {});
     bool isWordInTreeHelper(BinaryTreeNode *root, const string &word, int pos = 0);
 };
 

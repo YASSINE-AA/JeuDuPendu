@@ -1,5 +1,5 @@
 #include "binary_tree.hpp"
-#include <iomanip>
+
 
 void BinaryTree::printTreeHelper(BinaryTreeNode *root, int space, int count)
 {
@@ -108,7 +108,7 @@ void BinaryTree::deleteWordHelper(BinaryTreeNode *&root, string word, BinaryTree
     }
 }
 
-vector<int> BinaryTree::getLetterPosition(BinaryTreeNode *root, char letter, const string &codeWord, int pos, vector<int> res)
+vector<int> BinaryTree::getLetterPositionHelper(BinaryTreeNode *root, char letter, const string &codeWord, int pos, vector<int> res)
 {
     if (root == nullptr)
     {
@@ -121,13 +121,16 @@ vector<int> BinaryTree::getLetterPosition(BinaryTreeNode *root, char letter, con
     }
     else if (root->value == codeWord[pos])
     {
-        if (root->value == letter)
-            res.push_back(pos);
-        return getLetterPosition(root->FG, letter, codeWord, pos + 1, res);
+        if (root->value == letter) {
+res.push_back(pos);
+cout << "added " << pos << endl;
+        }
+            
+        return getLetterPositionHelper(root->FG, letter, codeWord, pos + 1, res);
     }
     else
     {
-        return getLetterPosition(root->FD, letter, codeWord, pos, res);
+        return getLetterPositionHelper(root->FD, letter, codeWord, pos, res);
     }
 }
 

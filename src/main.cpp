@@ -4,7 +4,7 @@
 #include <forward_list>
 #include "dictionary.hpp"
 #include "binary_tree.hpp"
-#include "binary_tree_node.hpp"
+#include "game.hpp"
 
 using namespace std;
 
@@ -12,11 +12,19 @@ int main()
 {
     BinaryTree tree = BinaryTree();
     Dictionary dictionary = Dictionary("dict.txt");
-
+    string randomWord = dictionary.getRandomWord();
     tree.createFromDict(dictionary.allWords);
-    cout << tree.isWordInTree("imperative") << endl;
-    tree.deleteWord("imperative");
-    cout << tree.isWordInTree("imperative") << endl;
+    Game game = Game(randomWord, tree);
+    cout << "psst, word is " << randomWord << endl;
+    char userGuess;
+    while(!game.isGameWon() && !game.isGameOver()) {
+        cout << "Guess letter: ";
+        cin >> userGuess;
+        game.guessLetter(userGuess);
+
+    }
+    
+    
 
     return 0;
 }
