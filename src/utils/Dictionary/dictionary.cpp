@@ -1,6 +1,6 @@
 #include "dictionary.hpp"
 
-forward_list<string> Dictionary::readFromFile(const string &filename)
+vector<string> Dictionary::readFromFile(const string &filename)
 {
     ifstream dictFile(filename);
 
@@ -10,12 +10,12 @@ forward_list<string> Dictionary::readFromFile(const string &filename)
         return {};
     }
 
-    forward_list<string> words;
+    vector<string> words;
     string word;
 
     while (dictFile >> word)
     {
-        words.push_front(word);
+        words.push_back(word);
     }
 
     return words;

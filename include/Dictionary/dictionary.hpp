@@ -1,12 +1,25 @@
 #include <string>
 #include <iostream>
-#include <forward_list>
+#include <vector>
 #include <fstream>
+#include <cstdlib>
 
 using namespace std;
 
 class Dictionary
 {
 public:
-    static forward_list<string> readFromFile(const string &filename);
+    vector<string> allWords;
+    Dictionary(string filename)
+    {
+        srand((unsigned)time(NULL));
+        allWords = readFromFile(filename);
+    }
+    string getRandomWord()
+    {
+        return allWords[rand() % allWords.size()];
+    }
+
+private:
+    static vector<string> readFromFile(const string &filename);
 };
