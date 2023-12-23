@@ -64,7 +64,9 @@ public:
                 cout << "Char isn't in word!" << endl;
                 incorrectGuesses++;
             }
-        } else {
+        }
+        else
+        {
             cout << "You have already guessed that word!" << endl;
         }
     };
