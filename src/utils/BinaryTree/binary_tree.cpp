@@ -1,6 +1,5 @@
 #include "binary_tree.hpp"
 
-
 void BinaryTree::printTreeHelper(BinaryTreeNode *root, int space, int count)
 {
     if (!root)
@@ -121,11 +120,9 @@ vector<int> BinaryTree::getLetterPositionHelper(BinaryTreeNode *root, char lette
     }
     else if (root->value == codeWord[pos])
     {
-        if (root->value == letter) {
-res.push_back(pos);
-cout << "added " << pos << endl;
-        }
-            
+        if (root->value == letter)
+            res.push_back(pos);
+
         return getLetterPositionHelper(root->FG, letter, codeWord, pos + 1, res);
     }
     else

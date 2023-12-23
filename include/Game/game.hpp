@@ -49,7 +49,7 @@ public:
         if (letterPositions.size() > 0)
         {
             cout << "Char in word!" << endl;
-            correctGuesses += letterPositions.size();
+            correctGuesses++;
         }
         else
         {
