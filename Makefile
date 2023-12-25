@@ -9,14 +9,14 @@ DEPS := $(OBJS:.o=.d)
 INC_DIRS := $(shell find $(SRC_DIRS) -type d) 
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-GTK3_CFLAGS := $(shell pkg-config --cflags gtk+-3.0)
-GTK3_LDFLAGS := $(shell pkg-config --libs gtk+-3.0)
+SDL_CFLAGS := $(shell sdl2-config --cflags)
+SDL_LDFLAGS := $(shell sdl2-config --libs)
 
-CJSON_CFLAGS := $(shell pkg-config --cflags libcjson)
-CJSON_LDFLAGS := $(shell pkg-config --libs libcjson)
+SDL_IMAGE_CFLAGS := $(shell pkg-config SDL2_image --cflags)
+SDL_IMAGE_LDFLAGS := $(shell pkg-config SDL2_image --libs)
 
-CPPFLAGS := $(INC_FLAGS) $(GTK3_CFLAGS) $(CJSON_CFLAGS) -MMD -MP
-LDFLAGS := $(GTK3_LDFLAGS) $(CJSON_LDFLAGS)
+CPPFLAGS := $(INC_FLAGS) $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) -MMD -MP
+LDFLAGS := $(SDL_LDFLAGS) $(SDL_IMAGE_LDFLAGS)
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS)

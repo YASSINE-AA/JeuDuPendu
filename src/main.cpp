@@ -5,26 +5,30 @@
 #include "dictionary.hpp"
 #include "binary_tree.hpp"
 #include "game.hpp"
+#include <stdio.h>
+#include <stdlib.h>
+#include "gui.hpp"
+#include <SDL2/SDL.h>
 
 using namespace std;
 
 int main()
 {
+    Dictionary dict = Dictionary("dict.txt");
     BinaryTree tree = BinaryTree();
-    Dictionary dictionary = Dictionary("dict.txt");
-    string randomWord = dictionary.getRandomWord();
-    tree.createFromDict(dictionary.allWords);
+    tree.createFromDict(dict.allWords);
+    string randomWord = dict.getRandomWord();
     Game game = Game(randomWord, tree);
-    cout << "psst, word is " << randomWord << endl;
+    cout << "word is: " << randomWord << endl;
     char userGuess;
-    while(!game.isGameWon() && !game.isGameOver()) {
-        cout << "Guess letter: ";
+    while (!game.isGameOver() && !game.isGameWon())
+    {
+        cout << "Guess character: ";
         cin >> userGuess;
         game.guessLetter(userGuess);
-
     }
-    
-    
 
-    return 0;
+    game.displayWord();
+
+    return EXIT_SUCCESS;
 }

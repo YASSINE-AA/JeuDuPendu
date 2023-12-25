@@ -13,9 +13,6 @@ using namespace std;
 
 class BinaryTree
 {
-private:
-    BinaryTreeNode *tete;
-
 public:
     BinaryTree() : tete(nullptr) {}
     void insertWord(const string &word)
@@ -37,13 +34,15 @@ public:
         printTreeHelper(tete);
     }
 
-    vector<int> getLetterPosition(char letter, const string &codeWord) {
+    vector<int> getLetterPosition(char letter, const string &codeWord)
+    {
         return getLetterPositionHelper(tete, letter, codeWord);
     }
 
     BinaryTreeNode *createFromDict(vector<string> dictionary);
 
 private:
+    BinaryTreeNode *tete;
     void printTreeHelper(BinaryTreeNode *root, int space = 0, int count = 5);
     void insertWordHelper(BinaryTreeNode *&root, const string &word, int pos = 0);
     void deleteWordHelper(BinaryTreeNode *&root, string word, BinaryTreeNode *&nodeToRemove, int pos = 0);
