@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_keyboard.h>
 #include <unistd.h>
 
 class GUI
@@ -74,7 +75,7 @@ public:
         }
 
         SDL_Texture *textTexture = SDL_CreateTextureFromSurface(ren, textSurface);
-        SDL_FreeSurface(textSurface); // Free the surface after creating the texture.
+        SDL_FreeSurface(textSurface);
 
         if (textTexture == nullptr)
         {
@@ -163,40 +164,15 @@ public:
             throw std::runtime_error("Render not initialized!");
         }
     }
-
-    void handleEvents(bool &loadMainMenu, bool &loadGame)
+    char convertSDLKeyToChar(SDL_Keycode key)
     {
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
+        if ((key >= SDLK_a && key <= SDLK_z) || (key >= SDLK_0 && key <= SDLK_9))
         {
-            if (event.type == SDL_QUIT)
-            {
-                cleanUp();
-            }
-            else if (event.type == SDL_MOUSEBUTTONDOWN)
-            {
-
-                int x;
-                int y;
-                getMousePosition(&x, &y);
-                if (isQuitBtnArea(x, y))
-                {
-                    cleanUp();
-                }
-                else if (isStartBtnArea(x, y))
-                {
-                    loadGame = true;
-                    loadMainMenu = false;
-                }
-            }
+            return static_cast<char>(key);
         }
-    }
 
-private:
-    SDL_Window *win;
-    SDL_Renderer *ren;
-    vector<SDL_Texture *> textures;
-    vector<TTF_Font *> fonts;
+        return '\0';
+    }
 
     void getMousePosition(int *x, int *y)
     {
@@ -221,6 +197,12 @@ private:
         }
         return false;
     }
+
+private:
+    SDL_Window *win;
+    SDL_Renderer *ren;
+    vector<SDL_Texture *> textures;
+    vector<TTF_Font *> fonts;
 };
 
 #endif

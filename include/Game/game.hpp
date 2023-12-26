@@ -9,15 +9,14 @@ using namespace std;
 
 class Game
 {
-private:
+
+public:
     string wordToGuess;
     BinaryTree wordTree;
     int maxGuesses;
     int correctGuesses;
     int incorrectGuesses;
     set<char> guessedChars;
-
-public:
     Game(string word, BinaryTree tree) : wordToGuess(word), wordTree(tree), correctGuesses(0), incorrectGuesses(0), maxGuesses(5) {}
 
     bool isGameOver() const
@@ -47,27 +46,28 @@ public:
         cout << "The word was: " << wordToGuess << endl;
     }
 
-    void guessLetter(char character)
+    vector<int> guessLetter(char character)
     {
         if (guessedChars.find(character) == guessedChars.end())
         {
             vector<int> letterPositions = wordTree.getLetterPosition(character, wordToGuess);
             if (letterPositions.size() > 0)
             {
-                cout << "Char in word!" << endl;
                 correctGuesses += letterPositions.size();
 
                 guessedChars.insert(character);
+                return letterPositions;
             }
             else
             {
-                cout << "Char isn't in word!" << endl;
                 incorrectGuesses++;
+                return {};
             }
         }
         else
         {
             cout << "You have already guessed that word!" << endl;
+            return {};
         }
     };
 };
