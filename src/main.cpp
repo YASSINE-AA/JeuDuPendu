@@ -37,6 +37,7 @@ int main()
     SDL_Rect quitRect = {width / 2 - 100, height / 2, 194, 82};
     bool loadMainMenu = true;
     bool loadGame = false;
+    bool gameFinished = false;
 
     while (true)
     {
@@ -49,15 +50,22 @@ int main()
             gui.render(gui.getTexture("assets/start.bmp"), &startRect);
             gui.render(gui.getTexture("assets/quit.bmp"), &quitRect);
         }
-        else if (game.isGameOver() || game.isGameWon())
+        else if (gameFinished)
         {
             loadGame = false;
+            TTF_SetFontSize(titleFont, 54);
             char *msg;
             if (game.isGameOver())
                 msg = (char *)"You have lost!";
             else
                 msg = (char *)"You have won!";
             gui.renderFont(titleFont, msg, (SDL_Color){0, 0, 0}, 100, 40);
+            TTF_SetFontSize(titleFont, 34);
+            gui.renderFont(titleFont, "Want to play again?", (SDL_Color){0, 0, 0}, 120, 130);
+            SDL_Rect playAgainRect = startRect;
+            playAgainRect.y += 50;
+            playAgainRect.x += 20;
+            gui.render(gui.getTexture("assets/start.bmp"), &playAgainRect);
         }
 
         else if (loadGame)
@@ -67,6 +75,7 @@ int main()
             TTF_SetFontSize(titleFont, 54);
 
             gui.renderFont(titleFont, (char *)placeholder.c_str(), (SDL_Color){0, 0, 0}, 100, 40);
+            gameFinished = game.isGameOver() || game.isGameWon();
         }
 
         SDL_Event event;
@@ -82,6 +91,8 @@ int main()
                 int x;
                 int y;
                 gui.getMousePosition(&x, &y);
+                cout << x << endl;
+                cout << y << endl;
                 if (gui.isQuitBtnArea(x, y))
                 {
                     gui.cleanUp();
@@ -90,6 +101,19 @@ int main()
                 {
                     loadGame = true;
                     loadMainMenu = false;
+                }
+                else if (gui.isPlayAgainBtnArea(x, y))
+                {
+                    gameFinished = false;
+                    randomWord = dictionary.getRandomWord();
+                    game = Game(randomWord, tree);
+                    cout << randomWord << endl;
+                    placeholder = randomWord;
+                    for (char &c : placeholder)
+                    {
+                        c = '_';
+                    }
+                    loadGame = true;
                 }
             }
             else if (event.type == SDL_KEYDOWN)

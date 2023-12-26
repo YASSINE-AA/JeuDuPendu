@@ -189,6 +189,16 @@ public:
         return false;
     }
 
+      bool isPlayAgainBtnArea(int mouseX, int mouseY)
+    {
+        if ((mouseX < 354 && mouseX > 170) && (mouseY > 230 && mouseY < 312))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     bool isQuitBtnArea(int mouseX, int mouseY)
     {
         if ((mouseX < 334 && mouseX > 150) && (mouseY > 300 && mouseY < 382))
