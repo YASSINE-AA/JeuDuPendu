@@ -131,7 +131,7 @@ vector<int> BinaryTree::getLetterPositionHelper(BinaryTreeNode *root, char lette
     }
 }
 
-BinaryTreeNode *BinaryTree::createFromDict(vector<string> dictionary)
+void BinaryTree::createFromDict(vector<string> dictionary)
 {
     BinaryTreeNode *root = nullptr;
     for (const string &word : dictionary)

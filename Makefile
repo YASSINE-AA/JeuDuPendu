@@ -15,8 +15,11 @@ SDL_LDFLAGS := $(shell sdl2-config --libs)
 SDL_IMAGE_CFLAGS := $(shell pkg-config SDL2_image --cflags)
 SDL_IMAGE_LDFLAGS := $(shell pkg-config SDL2_image --libs)
 
-CPPFLAGS := $(INC_FLAGS) $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) -MMD -MP
-LDFLAGS := $(SDL_LDFLAGS) $(SDL_IMAGE_LDFLAGS)
+SDL_TTF_CFLAGS := $(shell pkg-config SDL2_ttf --cflags)
+SDL_TTF_LDFLAGS := $(shell pkg-config SDL2_ttf --libs)
+
+CPPFLAGS := $(INC_FLAGS) $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) $(SDL_TTF_CFLAGS) -MMD -MP
+LDFLAGS := $(SDL_LDFLAGS) $(SDL_IMAGE_LDFLAGS) $(SDL_TTF_LDFLAGS)
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS)

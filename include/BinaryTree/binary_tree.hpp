@@ -14,7 +14,11 @@ using namespace std;
 class BinaryTree
 {
 public:
-    BinaryTree() : tete(nullptr) {}
+    BinaryTree(vector<string> dictionary) : tete(nullptr)
+    {
+        createFromDict(dictionary);
+    }
+
     void insertWord(const string &word)
     {
         insertWordHelper(tete, word);
@@ -39,10 +43,9 @@ public:
         return getLetterPositionHelper(tete, letter, codeWord);
     }
 
-    BinaryTreeNode *createFromDict(vector<string> dictionary);
-
 private:
     BinaryTreeNode *tete;
+    void createFromDict(vector<string> dictionary);
     void printTreeHelper(BinaryTreeNode *root, int space = 0, int count = 5);
     void insertWordHelper(BinaryTreeNode *&root, const string &word, int pos = 0);
     void deleteWordHelper(BinaryTreeNode *&root, string word, BinaryTreeNode *&nodeToRemove, int pos = 0);

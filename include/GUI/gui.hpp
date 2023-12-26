@@ -3,25 +3,97 @@
 
 #include <string>
 #include <stdexcept>
+#include <filesystem>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <unistd.h>
 
 class GUI
 {
 public:
-    GUI() : win(nullptr), ren(nullptr), backgroundTexture(nullptr) {}
+    GUI() : win(nullptr), ren(nullptr) {}
 
-    ~GUI()
+    void cleanUp()
     {
-        cleanUp();
+        for (SDL_Texture *texture : textures)
+        {
+            SDL_DestroyTexture(texture);
+        }
+
+        for (TTF_Font *font : fonts)
+        {
+            TTF_CloseFont(font);
+        }
+
+        if (ren != nullptr)
+            SDL_DestroyRenderer(ren);
+        if (win != nullptr)
+            SDL_DestroyWindow(win);
+        TTF_Quit();
+        IMG_Quit();
+        SDL_Quit();
     }
 
     void init()
     {
+
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
         {
             throw std::runtime_error("SDL_Init Error: " + std::string(SDL_GetError()));
         }
+
+        int flags = IMG_INIT_JPG | IMG_INIT_PNG;
+        int initted = IMG_Init(flags);
+        if ((initted & flags) != flags)
+        {
+            throw std::runtime_error("IMG_Init Error: " + std::string(IMG_GetError()));
+        }
+        if (TTF_Init() < 0)
+        {
+            throw std::runtime_error("SDL_ttf initialization failed: " + std::string(TTF_GetError()));
+        }
+    }
+
+    TTF_Font *openFont(const char *file, int size)
+    {
+        TTF_Font *font = TTF_OpenFont(file, size);
+        if (font == nullptr)
+            throw std::runtime_error("TTF_Open Error: " + std::string(TTF_GetError()));
+
+        fonts.push_back(font);
+        return font;
+    }
+    SDL_Texture *renderFont(TTF_Font *font, const char *text, SDL_Color color, int x, int y)
+    {
+
+        SDL_Surface *textSurface = TTF_RenderText_Solid(font, text, color);
+        if (textSurface == nullptr)
+        {
+            throw std::runtime_error("TTF_RenderText_Solid Error: " + std::string(TTF_GetError()));
+        }
+
+        SDL_Texture *textTexture = SDL_CreateTextureFromSurface(ren, textSurface);
+        SDL_FreeSurface(textSurface); // Free the surface after creating the texture.
+
+        if (textTexture == nullptr)
+        {
+            throw std::runtime_error("SDL_CreateTextureFromSurface Error: " + std::string(SDL_GetError()));
+        }
+
+        if (ren != nullptr)
+        {
+            SDL_Rect dest = {x, y, textSurface->w, textSurface->h};
+            SDL_RenderCopy(ren, textTexture, NULL, &dest);
+        }
+        else
+        {
+            throw std::runtime_error("Renderer not initialized!");
+        }
+
+        textures.push_back(textTexture);
+
+        return textTexture;
     }
 
     void createWindow(int x, int y, int w, int h)
@@ -44,57 +116,110 @@ public:
 
     void render(SDL_Texture *texture, SDL_Rect *dest)
     {
-        SDL_RenderCopy(ren, texture, NULL, dest);
-        SDL_RenderPresent(ren);
+        if (ren != nullptr)
+        {
+            SDL_RenderCopy(ren, texture, NULL, dest);
+        }
+        else
+        {
+            throw std::runtime_error("Render not initialized!");
+        }
     }
 
     SDL_Texture *getTexture(const char *filename)
     {
-        return IMG_LoadTexture(ren, filename);
+        SDL_Texture *tex = IMG_LoadTexture(ren, filename);
+
+        if (tex == nullptr)
+            throw runtime_error((std::string) "Texture for " + filename + " is null! ");
+        textures.push_back(tex);
+        return tex;
     }
 
     void clearRender()
     {
-        SDL_RenderClear(ren);
+        if (ren != nullptr)
+        {
+            for (SDL_Texture *texture : textures)
+            {
+                SDL_DestroyTexture(texture);
+            }
+            SDL_RenderClear(ren);
+        }
+        else
+        {
+            throw std::runtime_error("Render not initialized!");
+        }
     }
 
     void update()
     {
-        SDL_RenderPresent(ren);
+        if (ren != nullptr)
+        {
+            SDL_RenderPresent(ren);
+        }
+        else
+        {
+            throw std::runtime_error("Render not initialized!");
+        }
     }
 
-    void handleEvents()
+    void handleEvents(bool &loadMainMenu, bool &loadGame)
     {
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
-            listenForExit(event);
+            if (event.type == SDL_QUIT)
+            {
+                cleanUp();
+            }
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+
+                int x;
+                int y;
+                getMousePosition(&x, &y);
+                if (isQuitBtnArea(x, y))
+                {
+                    cleanUp();
+                }
+                else if (isStartBtnArea(x, y))
+                {
+                    loadGame = true;
+                    loadMainMenu = false;
+                }
+            }
         }
     }
 
 private:
     SDL_Window *win;
     SDL_Renderer *ren;
-    SDL_Texture *backgroundTexture;
+    vector<SDL_Texture *> textures;
+    vector<TTF_Font *> fonts;
 
-    void cleanUp()
+    void getMousePosition(int *x, int *y)
     {
-        if (backgroundTexture != nullptr)
-            SDL_DestroyTexture(backgroundTexture);
-        if (ren != nullptr)
-            SDL_DestroyRenderer(ren);
-        if (win != nullptr)
-            SDL_DestroyWindow(win);
-        SDL_Quit();
+        SDL_GetMouseState(x, y);
     }
 
-    void listenForExit(SDL_Event &event)
+    bool isStartBtnArea(int mouseX, int mouseY)
     {
-        if (event.type == SDL_QUIT)
+        if ((mouseX < 334 && mouseX > 150) && (mouseY > 180 && mouseY < 262))
         {
-            cleanUp();
-            throw std::runtime_error("SDL_QUIT event received");
+            return true;
         }
+
+        return false;
+    }
+
+    bool isQuitBtnArea(int mouseX, int mouseY)
+    {
+        if ((mouseX < 334 && mouseX > 150) && (mouseY > 300 && mouseY < 382))
+        {
+            return true;
+        }
+        return false;
     }
 };
 
