@@ -17,7 +17,12 @@ public:
     int correctGuesses;
     int incorrectGuesses;
     set<char> guessedChars;
-    Game(string word, BinaryTree tree) : wordToGuess(word), wordTree(tree), correctGuesses(0), incorrectGuesses(0), maxGuesses(5) {}
+    Game(BinaryTree tree) : wordTree(tree), correctGuesses(0), incorrectGuesses(0), maxGuesses(8) {}
+
+    void setWord(string word)
+    {
+        wordToGuess = word;
+    }
 
     bool isGameOver() const
     {
@@ -70,6 +75,13 @@ public:
             return {};
         }
     };
+
+    void reset()
+    {
+        correctGuesses = 0;
+        incorrectGuesses = 0;
+        guessedChars.clear();
+    }
 };
 
 #endif

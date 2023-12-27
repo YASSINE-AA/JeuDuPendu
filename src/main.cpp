@@ -16,15 +16,8 @@ int main()
 {
     Dictionary dictionary = Dictionary("dict.txt");
     BinaryTree tree = BinaryTree(dictionary.allWords);
-    string randomWord = dictionary.getRandomWord();
-    string placeholder = randomWord;
-    for (char &c : placeholder)
-    {
-        c = '_';
-    }
-
-    Game game = Game(randomWord, tree);
-    cout << randomWord << endl;
+    string placeholder;
+    Game game = Game(tree);
     GUI gui = GUI();
     gui.init();
     int width = 500;
@@ -34,6 +27,7 @@ int main()
     TTF_Font *titleFont = gui.openFont("assets/fonts/pacifico.ttf", 56);
     cout << (width / 2) - 50 << endl;
     SDL_Rect startRect = {width / 2 - 100, height / 2 - 120, 194, 82};
+    SDL_Rect menuRect = {10, 10, 36, 36};
     SDL_Rect quitRect = {width / 2 - 100, height / 2, 194, 82};
     bool loadMainMenu = true;
     bool loadGame = false;
@@ -46,19 +40,32 @@ int main()
         gui.render(gui.getTexture("assets/bg.bmp"), NULL);
         if (loadMainMenu)
         {
-            gui.renderFont(titleFont, "Hangman!", (SDL_Color){0, 0, 0}, 140, 40);
+            TTF_SetFontSize(titleFont, 54);
+
+            gui.renderFont(titleFont, "Hangman! v1.0", (SDL_Color){0, 0, 0}, 110, 38);
+            TTF_SetFontSize(titleFont, 24);
+
+            gui.renderFont(titleFont, "Created by Yassine Ahmed Ali", (SDL_Color){0, 0, 0}, 110, 520);
+
             gui.render(gui.getTexture("assets/start.bmp"), &startRect);
             gui.render(gui.getTexture("assets/quit.bmp"), &quitRect);
         }
         else if (gameFinished)
         {
             loadGame = false;
-            TTF_SetFontSize(titleFont, 54);
             char *msg;
             if (game.isGameOver())
+            {
                 msg = (char *)"You have lost!";
+                TTF_SetFontSize(titleFont, 30);
+
+                gui.renderFont(titleFont, (char *)((string) "The word was: " + (string)game.wordToGuess).c_str(), (SDL_Color){0, 0, 0}, 120, 340);
+            }
+
             else
                 msg = (char *)"You have won!";
+            TTF_SetFontSize(titleFont, 54);
+
             gui.renderFont(titleFont, msg, (SDL_Color){0, 0, 0}, 100, 40);
             TTF_SetFontSize(titleFont, 34);
             gui.renderFont(titleFont, "Want to play again?", (SDL_Color){0, 0, 0}, 120, 130);
@@ -66,6 +73,7 @@ int main()
             playAgainRect.y += 50;
             playAgainRect.x += 20;
             gui.render(gui.getTexture("assets/start.bmp"), &playAgainRect);
+            gui.render(gui.getTexture("assets/menu.bmp"), &menuRect);
         }
 
         else if (loadGame)
@@ -75,6 +83,7 @@ int main()
             TTF_SetFontSize(titleFont, 54);
 
             gui.renderFont(titleFont, (char *)placeholder.c_str(), (SDL_Color){0, 0, 0}, 100, 40);
+            gui.renderHangman(game.incorrectGuesses);
             gameFinished = game.isGameOver() || game.isGameWon();
         }
 
@@ -93,27 +102,51 @@ int main()
                 gui.getMousePosition(&x, &y);
                 cout << x << endl;
                 cout << y << endl;
-                if (gui.isQuitBtnArea(x, y))
+                if (!gameFinished && !loadGame)
                 {
-                    gui.cleanUp();
-                }
-                else if (gui.isStartBtnArea(x, y))
-                {
-                    loadGame = true;
-                    loadMainMenu = false;
-                }
-                else if (gui.isPlayAgainBtnArea(x, y))
-                {
-                    gameFinished = false;
-                    randomWord = dictionary.getRandomWord();
-                    game = Game(randomWord, tree);
-                    cout << randomWord << endl;
-                    placeholder = randomWord;
-                    for (char &c : placeholder)
+                    if (gui.isStartBtnArea(x, y))
                     {
-                        c = '_';
+                        game.reset();
+
+                        string randomWord = dictionary.getRandomWord();
+                        game.setWord(randomWord);
+                        cout << randomWord << endl;
+                        placeholder = randomWord;
+                        for (char &c : placeholder)
+                        {
+                            c = '_';
+                        }
+                        loadGame = true;
+                        loadMainMenu = false;
                     }
-                    loadGame = true;
+                    else if (gui.isQuitBtnArea(x, y))
+                    {
+                        gui.cleanUp();
+                    }
+                }
+
+                else if (gameFinished && !loadGame)
+                {
+                    if (gui.isPlayAgainBtnArea(x, y))
+                    {
+                        game.reset();
+                        gameFinished = false;
+                        string randomWord = dictionary.getRandomWord();
+                        game.setWord(randomWord);
+                        cout << randomWord << endl;
+                        placeholder = randomWord;
+                        for (char &c : placeholder)
+                        {
+                            c = '_';
+                        }
+                        loadGame = true;
+                    }
+                    else if (gui.isGoBackToMenuArea(x, y))
+                    {
+                        gameFinished = false;
+                        loadGame = false;
+                        loadMainMenu = true;
+                    }
                 }
             }
             else if (event.type == SDL_KEYDOWN)
@@ -140,22 +173,3 @@ int main()
     }
     return EXIT_SUCCESS;
 }
-
-/*
-
-
-    Dictionary dict = Dictionary("dict.txt");
-    BinaryTree tree = BinaryTree(dict.allWords);
-    string randomWord = dict.getRandomWord();
-    Game game = Game(randomWord, tree);
-    cout << "word is: " << randomWord << endl;
-    char userGuess;
-    while (!game.isGameOver() && !game.isGameWon())
-    {
-        cout << "Guess character: ";
-        cin >> userGuess;
-        game.guessLetter(userGuess);
-    }
-
-    game.displayWord();
-*/

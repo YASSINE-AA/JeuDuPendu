@@ -56,6 +56,28 @@ public:
         }
     }
 
+    void renderCircle(int centerX, int centerY, int radius)
+    {
+
+        for (int angle = 0; angle <= 360; ++angle)
+        {
+
+            int x = centerX + (int)(radius * cos(angle * M_PI / 180.0));
+            int y = centerY + (int)(radius * sin(angle * M_PI / 180.0));
+
+            SDL_RenderDrawPoint(ren, x, y);
+        }
+    }
+
+    void renderLine(int x1, int y1, int x2, int y2, int lineThickness)
+    {
+
+        for (int i = 0; i < lineThickness; ++i)
+        {
+            SDL_RenderDrawLine(ren, x1, y1 + i, x2, y2 + i);
+        }
+    }
+
     TTF_Font *openFont(const char *file, int size)
     {
         TTF_Font *font = TTF_OpenFont(file, size);
@@ -153,6 +175,51 @@ public:
         }
     }
 
+    void renderHangman(int incorrectGuesses)
+    {
+        if (incorrectGuesses >= 1)
+        {
+            renderLine(100, 500, 200, 500, 5);
+        }
+
+        if (incorrectGuesses >= 2)
+        {
+            renderLine(150, 300, 150, 500, 5);
+        }
+
+        if (incorrectGuesses >= 3)
+        {
+            renderLine(150, 300, 300, 300, 5);
+        }
+
+        if (incorrectGuesses >= 4)
+        {
+            renderLine(300, 300, 300, 350, 5);
+        }
+
+        if (incorrectGuesses >= 5)
+        {
+            renderCircle(300, 375, 20);
+        }
+
+        if (incorrectGuesses >= 6)
+        {
+            renderLine(300, 395, 300, 450, 5);
+        }
+
+        if (incorrectGuesses >= 7)
+        {
+            renderLine(300, 410, 320, 430, 5);
+            renderLine(300, 410, 280, 430, 5);
+        }
+
+        if (incorrectGuesses >= 8)
+        {
+            renderLine(300, 450, 320, 470, 5);
+            renderLine(300, 450, 280, 470, 5);
+        }
+    }
+
     void update()
     {
         if (ren != nullptr)
@@ -189,7 +256,18 @@ public:
         return false;
     }
 
-      bool isPlayAgainBtnArea(int mouseX, int mouseY)
+    bool isGoBackToMenuArea(int mouseX, int mouseY)
+    {
+        if ((mouseX < 74 && mouseX > 10) && (mouseY > 10 && mouseY < 74))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    bool isPlayAgainBtnArea(int mouseX, int mouseY)
     {
         if ((mouseX < 354 && mouseX > 170) && (mouseY > 230 && mouseY < 312))
         {
