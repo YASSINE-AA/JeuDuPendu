@@ -18,8 +18,13 @@ SDL_IMAGE_LDFLAGS := $(shell pkg-config SDL2_image --libs)
 SDL_TTF_CFLAGS := $(shell pkg-config SDL2_ttf --cflags)
 SDL_TTF_LDFLAGS := $(shell pkg-config SDL2_ttf --libs)
 
-CPPFLAGS := $(INC_FLAGS) $(SDL_CFLAGS) $(SDL_IMAGE_CFLAGS) $(SDL_TTF_CFLAGS) -MMD -MP
-LDFLAGS := $(SDL_LDFLAGS) $(SDL_IMAGE_LDFLAGS) $(SDL_TTF_LDFLAGS)
+
+SDL_MIXER_CFLAGS := $(shell pkg-config SDL2_mixer --cflags)
+SDL_MIXER_LDFLAGS := $(shell pkg-config SDL2_mixer --libs)
+
+
+CPPFLAGS := $(INC_FLAGS) $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS) $(SDL_IMAGE_CFLAGS) $(SDL_TTF_CFLAGS) -MMD -MP
+LDFLAGS := $(SDL_LDFLAGS) $(SDL_MIXER_LDFLAGS) $(SDL_IMAGE_LDFLAGS) $(SDL_TTF_LDFLAGS)
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS)

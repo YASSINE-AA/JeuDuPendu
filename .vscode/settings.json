@@ -12,6 +12,7 @@
         "iomanip": "cpp",
         "random": "cpp",
         "list": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "stdexcept": "cpp"
     }
 }

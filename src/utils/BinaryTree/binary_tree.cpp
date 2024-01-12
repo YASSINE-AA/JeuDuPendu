@@ -92,7 +92,11 @@ void BinaryTree::deleteWordHelper(BinaryTreeNode *&root, string word, BinaryTree
         if (root->value == '\0')
         {
             if (root->FD == nullptr)
+            {
+                free(nodeToRemove);
                 nodeToRemove = nullptr;
+            }
+
             else
                 root = root->FD;
         }

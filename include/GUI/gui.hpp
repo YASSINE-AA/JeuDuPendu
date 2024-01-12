@@ -9,6 +9,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_keyboard.h>
 #include <unistd.h>
+#include <SDL2/SDL_mixer.h>
 
 class GUI
 {
@@ -27,10 +28,20 @@ public:
             TTF_CloseFont(font);
         }
 
+        for (Mix_Chunk *audio : audios)
+        {
+            Mix_FreeChunk(audio);
+        }
+
+        if (bgMusic)
+            Mix_FreeMusic(bgMusic);
+
         if (ren != nullptr)
             SDL_DestroyRenderer(ren);
         if (win != nullptr)
             SDL_DestroyWindow(win);
+        closeAudio();
+        Mix_Quit();
         TTF_Quit();
         IMG_Quit();
         SDL_Quit();
@@ -39,7 +50,7 @@ public:
     void init()
     {
 
-        if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+        if (SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO) != 0)
         {
             throw std::runtime_error("SDL_Init Error: " + std::string(SDL_GetError()));
         }
@@ -54,6 +65,80 @@ public:
         {
             throw std::runtime_error("SDL_ttf initialization failed: " + std::string(TTF_GetError()));
         }
+        int flag = MIX_INIT_MP3;
+
+        if (Mix_Init(MIX_INIT_MP3) != flag)
+        {
+            throw std::runtime_error(Mix_GetError());
+        }
+    }
+
+    void openAudio()
+    {
+        if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+        {
+            throw std::runtime_error("Mixer init failed! \n");
+        }
+    }
+
+    Mix_Music *loadMusic(const char *path)
+    {
+        Mix_Music *mp3 = Mix_LoadMUS(path);
+
+        if (!mp3)
+        {
+            throw std::runtime_error(Mix_GetError());
+        }
+
+        bgMusic = mp3;
+        return mp3;
+    }
+
+    Mix_Chunk *loadWAV(const char *path)
+    {
+        Mix_Chunk *wav = Mix_LoadWAV(path);
+        if (!wav)
+        {
+            throw std::runtime_error(Mix_GetError());
+        }
+
+        audios.push_back(wav);
+        return wav;
+    }
+
+    void playAudioChannel(Mix_Chunk *chunk)
+    {
+        Mix_PlayChannel(-1, chunk, 0);
+    }
+
+    void closeAudio()
+    {
+        Mix_CloseAudio();
+    }
+
+    bool audioPlaying()
+    {
+        return Mix_PlayingMusic();
+    }
+
+    void playMusic(Mix_Music *music, int loops)
+    {
+        Mix_PlayMusic(music, loops);
+    }
+
+    void pauseMusic()
+    {
+        Mix_PauseMusic();
+    }
+
+    void resumeMusic()
+    {
+        Mix_ResumeMusic();
+    }
+
+    bool isMusicPaused() {
+        
+        return Mix_PausedMusic();
     }
 
     void renderCircle(int centerX, int centerY, int radius)
@@ -246,40 +331,9 @@ public:
         SDL_GetMouseState(x, y);
     }
 
-    bool isStartBtnArea(int mouseX, int mouseY)
+    bool isBtnArea(int mouseX, int mouseY, SDL_Rect rect)
     {
-        if ((mouseX < 334 && mouseX > 150) && (mouseY > 180 && mouseY < 262))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    bool isGoBackToMenuArea(int mouseX, int mouseY)
-    {
-        if ((mouseX < 74 && mouseX > 10) && (mouseY > 10 && mouseY < 74))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    bool isPlayAgainBtnArea(int mouseX, int mouseY)
-    {
-        if ((mouseX < 354 && mouseX > 170) && (mouseY > 230 && mouseY < 312))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    bool isQuitBtnArea(int mouseX, int mouseY)
-    {
-        if ((mouseX < 334 && mouseX > 150) && (mouseY > 300 && mouseY < 382))
+        if ((mouseX > rect.x && mouseX < rect.x + rect.w) && (mouseY > rect.y && mouseY < rect.y + rect.h))
         {
             return true;
         }
@@ -290,6 +344,8 @@ private:
     SDL_Window *win;
     SDL_Renderer *ren;
     vector<SDL_Texture *> textures;
+    Mix_Music *bgMusic;
+    vector<Mix_Chunk *> audios;
     vector<TTF_Font *> fonts;
 };
 
