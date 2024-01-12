@@ -23,10 +23,19 @@ string startNewGame(Game &game, Dictionary dictionary)
 int main()
 {
 
+    // Flags
+    bool loadMainMenu = true;
+    bool loadGame = false;
+    bool gameFinished = false;
+    bool loadSettings = false;
+
+    // Game Init
     Dictionary dictionary = Dictionary("dict.txt");
     BinaryTree tree = BinaryTree(dictionary.allWords);
     string placeholder;
     Game game = Game(tree);
+
+    // GUI Init
     GUI gui = GUI();
     gui.init();
     int width = 500;
@@ -37,15 +46,14 @@ int main()
     cout << (width / 2) - 50 << endl;
     SDL_Rect startRect = {width / 2 - 100, height / 2 - 120, 194, 82};
     SDL_Rect menuRect = {10, 10, 36, 36};
-    SDL_Rect settingsRect = {width / 2 - 100, height / 2 -20, 194, 82};
+    SDL_Rect settingsRect = {width / 2 - 100, height / 2 - 20, 194, 82};
     SDL_Rect quitRect = {width / 2 - 100, height / 2 + 80, 194, 82};
     SDL_Rect muteUnmuteRect = {10, 10, 36, 36};
     SDL_Rect playAgainRect = startRect;
     playAgainRect.y += 50;
     playAgainRect.x += 20;
-    bool loadMainMenu = true;
-    bool loadGame = false;
-    bool gameFinished = false;
+
+    // BG Music
     gui.openAudio();
     gui.playMusic(gui.loadMusic("assets/bg.wav"), 20);
 
@@ -76,6 +84,18 @@ int main()
             gui.render(gui.getTexture("assets/start.bmp"), &startRect);
             gui.render(gui.getTexture("assets/settings.bmp"), &settingsRect);
             gui.render(gui.getTexture("assets/quit.bmp"), &quitRect);
+        }
+
+        else if (loadSettings)
+        {
+
+            TTF_SetFontSize(titleFont, 54);
+            gui.renderFont(titleFont, "Settings", (SDL_Color){0, 0, 0}, 150, 61);
+            TTF_SetFontSize(titleFont, 30);
+
+            gui.renderFont(titleFont, "Difficulty:", (SDL_Color){0, 0, 0}, 100, 165);
+
+
         }
         else if (gameFinished)
         {
@@ -155,7 +175,7 @@ int main()
                         game.reset();
                     }
                 }
-                if (!gameFinished && !loadGame)
+                if (loadMainMenu)
                 {
                     if (gui.isBtnArea(x, y, startRect))
                     {
@@ -168,12 +188,19 @@ int main()
                         }
                         loadGame = true;
                         loadMainMenu = false;
+                        loadSettings = false;
                     }
                     else if (gui.isBtnArea(x, y, quitRect))
                     {
                         gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
                         SDL_Delay(1000);
                         gui.cleanUp();
+                    }
+                    else if (gui.isBtnArea(x, y, settingsRect))
+                    {
+                        gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
+                        loadMainMenu = false;
+                        loadSettings = true;
                     }
                 }
 
