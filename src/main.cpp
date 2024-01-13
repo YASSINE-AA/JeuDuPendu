@@ -12,12 +12,17 @@
 
 using namespace std;
 
-string startNewGame(Game &game, Dictionary dictionary)
+void startNewGame(Game &game, Dictionary dictionary, string &placeholder)
 {
     game.reset();
     string randomWord = dictionary.getRandomWord();
+    placeholder = randomWord;
+    for (char &c : placeholder)
+    {
+        c = '_';
+    }
+    cout << randomWord << endl;
     game.setWord(randomWord);
-    return randomWord;
 }
 
 int main()
@@ -31,11 +36,13 @@ int main()
 
     // Game Init
     int difficulty = 0;
+    int streak = 0;
+    int score = 0;
     Dictionary dictionary = Dictionary("dict.txt");
     BinaryTree tree = BinaryTree(dictionary.allWords);
     string placeholder;
     Game game = Game(tree, difficulty);
-    
+
     // GUI Init
     GUI gui = GUI();
     gui.init();
@@ -82,7 +89,7 @@ int main()
 
             TTF_SetFontSize(titleFont, 54);
 
-            gui.renderFont(titleFont, "Hangman! v1.0", (SDL_Color){0, 0, 0}, 110, 38);
+            gui.renderFont(titleFont, "Hangman v1.0", (SDL_Color){0, 0, 0}, 110, 38);
             TTF_SetFontSize(titleFont, 24);
 
             gui.renderFont(titleFont, "Created by Yassine Ahmed Ali", (SDL_Color){0, 0, 0}, 110, 520);
@@ -134,14 +141,24 @@ int main()
 
         else if (loadGame)
         {
+            TTF_SetFontSize(titleFont, 30);
+            gui.renderFont(titleFont, ("streak: " + std::to_string(streak)).c_str(), (SDL_Color){0, 0, 0}, 350, 0);
+            score-= 10*game.incorrectGuesses;
+            gui.renderFont(titleFont, ("score: " + std::to_string(score)).c_str(), (SDL_Color){0, 0, 0}, 350, 25);
 
             TTF_SetFontSize(titleFont, 34);
-            gui.renderFont(titleFont, ("Wrong Guesses: " + std::to_string(game.incorrectGuesses)).c_str(), (SDL_Color){1, 0, 0}, 100, 180);
+            gui.renderFont(titleFont, ("Wrong Guesses: " + std::to_string(game.incorrectGuesses)).c_str(), (SDL_Color){0, 0, 0}, 100, 180);
             TTF_SetFontSize(titleFont, 54);
 
             gui.renderFont(titleFont, (char *)placeholder.c_str(), (SDL_Color){0, 0, 0}, 100, 40);
             gui.renderHangman(game.incorrectGuesses, difficulty);
-            gameFinished = game.isGameOver() || game.isGameWon();
+            if (game.isGameWon())
+            {
+                startNewGame(game, dictionary, placeholder);
+                score = streak * 50; 
+                streak++;
+            }
+            gameFinished = game.isGameOver();
         }
 
         SDL_Event event;
@@ -184,6 +201,7 @@ int main()
                         loadGame = false;
                         loadMainMenu = true;
                         game.reset();
+                        streak = 0;
                     }
                 }
                 if (loadMainMenu)
@@ -191,12 +209,8 @@ int main()
                     if (gui.isBtnArea(x, y, startRect))
                     {
                         gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
-                        placeholder = startNewGame(game, dictionary);
-
-                        for (char &c : placeholder)
-                        {
-                            c = '_';
-                        }
+                        startNewGame(game, dictionary, placeholder);
+                        streak = 0;
                         loadGame = true;
                         loadMainMenu = false;
                         loadSettings = false;
@@ -222,11 +236,9 @@ int main()
                         gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
 
                         gameFinished = false;
-                        placeholder = startNewGame(game, dictionary);
-                        for (char &c : placeholder)
-                        {
-                            c = '_';
-                        }
+                        startNewGame(game, dictionary, placeholder);
+                        streak = 0;
+
                         loadGame = true;
                     }
                 }
