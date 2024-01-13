@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include "gui.hpp"
 #include <SDL2/SDL.h>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -16,6 +18,7 @@ bool startNewGame(Game &game, Dictionary dictionary, string &placeholder, vector
 {
     cout << difficulty << endl;
     game.reset();
+    game.setDifficulty(difficulty);
     int borneMin;
     int borneMax;
     switch (difficulty)
@@ -102,7 +105,6 @@ int main()
     // BG Music
     gui.openAudio();
     gui.playMusic(gui.loadMusic("assets/bg.wav"), 20);
-
     while (true)
     {
         gui.clearRender();
@@ -174,6 +176,7 @@ int main()
 
         else if (loadGame)
         {
+         
             TTF_SetFontSize(titleFont, 30);
             gui.renderFont(titleFont, ("streak: " + std::to_string(streak)).c_str(), (SDL_Color){0, 0, 0}, 350, 0);
             gui.renderFont(titleFont, ("score: " + std::to_string(score)).c_str(), (SDL_Color){0, 0, 0}, 350, 25);
@@ -192,7 +195,6 @@ int main()
                     streak++;
                     cout << game.incorrectGuesses << endl;
                     score = streak * 50;
-                    gameFinished = game.isGameOver();
                 }
                 else
                 {
@@ -205,6 +207,10 @@ int main()
                     visited.clear();
                     game.reset();
                 }
+            }
+            else
+            {
+                gameFinished = game.isGameOver();
             }
         }
 

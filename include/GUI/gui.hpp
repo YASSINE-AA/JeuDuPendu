@@ -3,18 +3,22 @@
 
 #include <string>
 #include <stdexcept>
-#include <filesystem>
+#include <vector>
+#include <cmath>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_keyboard.h>
-#include <unistd.h>
 #include <SDL2/SDL_mixer.h>
 
 class GUI
 {
 public:
-    GUI() : win(nullptr), ren(nullptr) {}
+    GUI() : win(nullptr), ren(nullptr), bgMusic(nullptr) {}
+
+    ~GUI()
+    {
+        cleanUp();
+    }
 
     void cleanUp()
     {
@@ -33,14 +37,23 @@ public:
             Mix_FreeChunk(audio);
         }
 
-        if (bgMusic)
+        if (bgMusic != nullptr)
+        {
             Mix_FreeMusic(bgMusic);
+        }
 
         if (ren != nullptr)
+        {
             SDL_DestroyRenderer(ren);
+        }
+
         if (win != nullptr)
+        {
             SDL_DestroyWindow(win);
+        }
+
         closeAudio();
+
         Mix_Quit();
         TTF_Quit();
         IMG_Quit();
@@ -49,7 +62,6 @@ public:
 
     void init()
     {
-
         if (SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO) != 0)
         {
             throw std::runtime_error("SDL_Init Error: " + std::string(SDL_GetError()));
@@ -61,13 +73,14 @@ public:
         {
             throw std::runtime_error("IMG_Init Error: " + std::string(IMG_GetError()));
         }
+
         if (TTF_Init() < 0)
         {
             throw std::runtime_error("SDL_ttf initialization failed: " + std::string(TTF_GetError()));
         }
-        int flag = MIX_INIT_MP3;
 
-        if (Mix_Init(MIX_INIT_MP3) != flag)
+        int flag = MIX_INIT_MP3;
+        if (Mix_Init(flag) != flag)
         {
             throw std::runtime_error(Mix_GetError());
         }
@@ -77,10 +90,9 @@ public:
     {
         if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
         {
-            throw std::runtime_error("Mixer init failed! \n");
+            throw std::runtime_error("Mixer init failed!");
         }
     }
-
     Mix_Music *loadMusic(const char *path)
     {
         Mix_Music *mp3 = Mix_LoadMUS(path);
@@ -273,33 +285,33 @@ public:
             renderLine(150, 300, 150, 500, 5);
         }
 
-        if (difficulty == 0 && incorrectGuesses >= 3  || difficulty == 1 && incorrectGuesses >= 2 || difficulty == 2 && incorrectGuesses >= 1)
+        if (difficulty == 0 && incorrectGuesses >= 3 || difficulty == 1 && incorrectGuesses >= 2 || difficulty == 2 && incorrectGuesses >= 1)
         {
             renderLine(150, 300, 300, 300, 5);
         }
 
-        if (difficulty == 0 && incorrectGuesses >= 4  || difficulty == 1 && incorrectGuesses >= 2 || difficulty == 2 && incorrectGuesses >= 2)
+        if (difficulty == 0 && incorrectGuesses >= 4 || difficulty == 1 && incorrectGuesses >= 2 || difficulty == 2 && incorrectGuesses >= 2)
         {
             renderLine(300, 300, 300, 350, 5);
         }
 
-        if (difficulty == 0 && incorrectGuesses >= 5  || difficulty == 1 && incorrectGuesses >= 2 || difficulty == 2 && incorrectGuesses >= 2)
+        if (difficulty == 0 && incorrectGuesses >= 5 || difficulty == 1 && incorrectGuesses >= 2 || difficulty == 2 && incorrectGuesses >= 2)
         {
             renderCircle(300, 375, 20);
         }
 
-        if (difficulty == 0 && incorrectGuesses >= 6  || difficulty == 1 && incorrectGuesses >= 3 || difficulty == 2 && incorrectGuesses >= 3)
+        if (difficulty == 0 && incorrectGuesses >= 6 || difficulty == 1 && incorrectGuesses >= 3 || difficulty == 2 && incorrectGuesses >= 3)
         {
             renderLine(300, 395, 300, 450, 5);
         }
 
-        if (difficulty == 0 && incorrectGuesses >= 7  || difficulty == 1 && incorrectGuesses >= 4|| difficulty == 2 && incorrectGuesses >= 3)
+        if (difficulty == 0 && incorrectGuesses >= 7 || difficulty == 1 && incorrectGuesses >= 4 || difficulty == 2 && incorrectGuesses >= 3)
         {
             renderLine(300, 410, 320, 430, 5);
             renderLine(300, 410, 280, 430, 5);
         }
 
-        if (difficulty == 0 && incorrectGuesses >= 8  || difficulty == 1 && incorrectGuesses >= 5|| difficulty == 2 && incorrectGuesses >= 3)
+        if (difficulty == 0 && incorrectGuesses >= 8 || difficulty == 1 && incorrectGuesses >= 5 || difficulty == 2 && incorrectGuesses >= 3)
         {
             renderLine(300, 450, 320, 470, 5);
             renderLine(300, 450, 280, 470, 5);
@@ -352,10 +364,10 @@ public:
 private:
     SDL_Window *win;
     SDL_Renderer *ren;
-    vector<SDL_Texture *> textures;
     Mix_Music *bgMusic;
-    vector<Mix_Chunk *> audios;
-    vector<TTF_Font *> fonts;
+    std::vector<SDL_Texture *> textures;
+    std::vector<Mix_Chunk *> audios;
+    std::vector<TTF_Font *> fonts;
 };
 
 #endif
