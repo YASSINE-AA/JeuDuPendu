@@ -154,8 +154,10 @@ int main()
             if (game.isGameWon())
             {
                 startNewGame(game, dictionary, placeholder);
-                score = streak * 50; 
+
                 streak++;
+                cout << game.incorrectGuesses << endl;
+                score = streak * 50;
             }
             gameFinished = game.isGameOver();
         }
