@@ -30,11 +30,12 @@ int main()
     bool loadSettings = false;
 
     // Game Init
+    int difficulty = 0;
     Dictionary dictionary = Dictionary("dict.txt");
     BinaryTree tree = BinaryTree(dictionary.allWords);
     string placeholder;
-    Game game = Game(tree);
-
+    Game game = Game(tree, difficulty);
+    
     // GUI Init
     GUI gui = GUI();
     gui.init();
@@ -43,6 +44,7 @@ int main()
     gui.createWindow(0, 0, width, height);
     gui.createRenderer();
     TTF_Font *titleFont = gui.openFont("assets/fonts/pacifico.ttf", 56);
+    const char *mutePath = "assets/mute.bmp";
     cout << (width / 2) - 50 << endl;
     SDL_Rect startRect = {width / 2 - 100, height / 2 - 120, 194, 82};
     SDL_Rect menuRect = {10, 10, 36, 36};
@@ -50,6 +52,10 @@ int main()
     SDL_Rect quitRect = {width / 2 - 100, height / 2 + 80, 194, 82};
     SDL_Rect muteUnmuteRect = {10, 10, 36, 36};
     SDL_Rect playAgainRect = startRect;
+    SDL_Rect easyRect = {160, 230, 180, 85};
+    SDL_Rect normalRect = {160, 340, 180, 85};
+    SDL_Rect difficultRect = {160, 450, 180, 85};
+    SDL_Rect selectionRect = easyRect;
     playAgainRect.y += 50;
     playAgainRect.x += 20;
 
@@ -66,13 +72,13 @@ int main()
         {
             gui.render(gui.getTexture("assets/menu.bmp"), &menuRect);
             muteUnmuteRect.x = 60;
-            gui.render(gui.getTexture("assets/mute.bmp"), &muteUnmuteRect);
+            gui.render(gui.getTexture(mutePath), &muteUnmuteRect);
         }
 
         if (loadMainMenu)
         {
             muteUnmuteRect.x = 10;
-            gui.render(gui.getTexture("assets/mute.bmp"), &muteUnmuteRect);
+            gui.render(gui.getTexture(mutePath), &muteUnmuteRect);
 
             TTF_SetFontSize(titleFont, 54);
 
@@ -95,7 +101,10 @@ int main()
 
             gui.renderFont(titleFont, "Difficulty:", (SDL_Color){0, 0, 0}, 100, 165);
 
-
+            gui.render(gui.getTexture("assets/easy.bmp"), &easyRect);
+            gui.render(gui.getTexture("assets/normal.bmp"), &normalRect);
+            gui.render(gui.getTexture("assets/difficult.bmp"), &difficultRect);
+            gui.renderRect(selectionRect);
         }
         else if (gameFinished)
         {
@@ -131,7 +140,7 @@ int main()
             TTF_SetFontSize(titleFont, 54);
 
             gui.renderFont(titleFont, (char *)placeholder.c_str(), (SDL_Color){0, 0, 0}, 100, 40);
-            gui.renderHangman(game.incorrectGuesses);
+            gui.renderHangman(game.incorrectGuesses, difficulty);
             gameFinished = game.isGameOver() || game.isGameWon();
         }
 
@@ -154,10 +163,12 @@ int main()
                     gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
                     if (!gui.isMusicPaused())
                     {
+                        mutePath = "assets/unmute.bmp";
                         gui.pauseMusic();
                     }
                     else
                     {
+                        mutePath = "assets/mute.bmp";
                         gui.resumeMusic();
                     }
                 }
@@ -217,6 +228,30 @@ int main()
                             c = '_';
                         }
                         loadGame = true;
+                    }
+                }
+                else if (loadSettings)
+                {
+                    if (gui.isBtnArea(x, y, easyRect))
+                    {
+                        gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
+                        selectionRect = easyRect;
+                        difficulty = 0;
+                        game.setDifficulty(0);
+                    }
+                    else if (gui.isBtnArea(x, y, normalRect))
+                    {
+                        gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
+                        selectionRect = normalRect;
+                        difficulty = 1;
+                        game.setDifficulty(1);
+                    }
+                    else if (gui.isBtnArea(x, y, difficultRect))
+                    {
+                        gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
+                        selectionRect = difficultRect;
+                        difficulty = 2;
+                        game.setDifficulty(2);
                     }
                 }
             }

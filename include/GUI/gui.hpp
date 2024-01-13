@@ -136,8 +136,9 @@ public:
         Mix_ResumeMusic();
     }
 
-    bool isMusicPaused() {
-        
+    bool isMusicPaused()
+    {
+
         return Mix_PausedMusic();
     }
 
@@ -260,45 +261,45 @@ public:
         }
     }
 
-    void renderHangman(int incorrectGuesses)
+    void renderHangman(int incorrectGuesses, int difficulty)
     {
-        if (incorrectGuesses >= 1)
+        if (difficulty == 0 && incorrectGuesses >= 1 || difficulty == 1 && incorrectGuesses >= 1 || difficulty == 2 && incorrectGuesses >= 1)
         {
             renderLine(100, 500, 200, 500, 5);
         }
 
-        if (incorrectGuesses >= 2)
+        if (difficulty == 0 && incorrectGuesses >= 2 || difficulty == 1 && incorrectGuesses >= 1 || difficulty == 2 && incorrectGuesses >= 1)
         {
             renderLine(150, 300, 150, 500, 5);
         }
 
-        if (incorrectGuesses >= 3)
+        if (difficulty == 0 && incorrectGuesses >= 3  || difficulty == 1 && incorrectGuesses >= 2 || difficulty == 2 && incorrectGuesses >= 1)
         {
             renderLine(150, 300, 300, 300, 5);
         }
 
-        if (incorrectGuesses >= 4)
+        if (difficulty == 0 && incorrectGuesses >= 4  || difficulty == 1 && incorrectGuesses >= 2 || difficulty == 2 && incorrectGuesses >= 2)
         {
             renderLine(300, 300, 300, 350, 5);
         }
 
-        if (incorrectGuesses >= 5)
+        if (difficulty == 0 && incorrectGuesses >= 5  || difficulty == 1 && incorrectGuesses >= 2 || difficulty == 2 && incorrectGuesses >= 2)
         {
             renderCircle(300, 375, 20);
         }
 
-        if (incorrectGuesses >= 6)
+        if (difficulty == 0 && incorrectGuesses >= 6  || difficulty == 1 && incorrectGuesses >= 3 || difficulty == 2 && incorrectGuesses >= 3)
         {
             renderLine(300, 395, 300, 450, 5);
         }
 
-        if (incorrectGuesses >= 7)
+        if (difficulty == 0 && incorrectGuesses >= 7  || difficulty == 1 && incorrectGuesses >= 4|| difficulty == 2 && incorrectGuesses >= 3)
         {
             renderLine(300, 410, 320, 430, 5);
             renderLine(300, 410, 280, 430, 5);
         }
 
-        if (incorrectGuesses >= 8)
+        if (difficulty == 0 && incorrectGuesses >= 8  || difficulty == 1 && incorrectGuesses >= 5|| difficulty == 2 && incorrectGuesses >= 3)
         {
             renderLine(300, 450, 320, 470, 5);
             renderLine(300, 450, 280, 470, 5);
@@ -338,6 +339,14 @@ public:
             return true;
         }
         return false;
+    }
+
+    void renderRect(SDL_Rect rect)
+    {
+        if (ren != nullptr)
+        {
+            SDL_RenderDrawRect(ren, &rect);
+        }
     }
 
 private:
