@@ -143,7 +143,6 @@ int main()
         {
             TTF_SetFontSize(titleFont, 30);
             gui.renderFont(titleFont, ("streak: " + std::to_string(streak)).c_str(), (SDL_Color){0, 0, 0}, 350, 0);
-            score-= 10*game.incorrectGuesses;
             gui.renderFont(titleFont, ("score: " + std::to_string(score)).c_str(), (SDL_Color){0, 0, 0}, 350, 25);
 
             TTF_SetFontSize(titleFont, 34);
