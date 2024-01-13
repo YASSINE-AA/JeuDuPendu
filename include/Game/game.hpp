@@ -18,6 +18,7 @@ public:
     int correctGuesses;
     int incorrectGuesses;
     set<char> guessedChars;
+
     Game(BinaryTree tree, int difficulty) : wordTree(tree), correctGuesses(0), incorrectGuesses(0), difficulty(difficulty)
     {
         setDifficulty(difficulty);
@@ -36,19 +37,16 @@ public:
         case 0:
             // easy
             maxGuesses = 8;
-
             break;
 
         case 1:
             // normal
             maxGuesses = 5;
-
             break;
 
         case 2:
             // difficult
             maxGuesses = 3;
-
             break;
 
         default:

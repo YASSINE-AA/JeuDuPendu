@@ -1,17 +1,17 @@
 #include "dictionary.hpp"
 
-vector<string> Dictionary::readFromFile(const string &filename)
+std::vector<std::string> Dictionary::readFromFile(const std::string &filename)
 {
-    ifstream dictFile(filename);
+    std::ifstream dictFile(filename);
 
     if (!dictFile.is_open())
     {
-        cerr << "Couldn't open file: " << filename << endl;
+        std::cerr << "Couldn't open file: " << filename << std::endl;
         return {};
     }
 
-    vector<string> words;
-    string word;
+    std::vector<std::string> words;
+    std::string word;
 
     while (dictFile >> word)
     {

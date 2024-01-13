@@ -12,17 +12,49 @@
 
 using namespace std;
 
-void startNewGame(Game &game, Dictionary dictionary, string &placeholder)
+bool startNewGame(Game &game, Dictionary dictionary, string &placeholder, vector<string> visited, int difficulty)
 {
+    cout << difficulty << endl;
     game.reset();
-    string randomWord = dictionary.getRandomWord();
-    placeholder = randomWord;
-    for (char &c : placeholder)
+    int borneMin;
+    int borneMax;
+    switch (difficulty)
     {
-        c = '_';
+    case 0:
+        borneMin = 2;
+        borneMax = 4;
+        break;
+
+    case 1:
+        borneMin = 4;
+        borneMax = 5;
+        break;
+
+    case 2:
+        borneMin = 6;
+        borneMax = 10;
+        break;
+
+    default:
+        break;
     }
-    cout << randomWord << endl;
-    game.setWord(randomWord);
+    string randomWord = dictionary.getRandomWord(borneMin, borneMax, visited);
+    cout << randomWord.length() << endl;
+    if (randomWord != "#")
+    {
+        placeholder = randomWord;
+        for (char &c : placeholder)
+        {
+            c = '_';
+        }
+        game.setWord(randomWord);
+        return true;
+    }
+    else
+    {
+        cout << "dictionnary is empty" << endl;
+        return false;
+    }
 }
 
 int main()
@@ -38,6 +70,7 @@ int main()
     int difficulty = 0;
     int streak = 0;
     int score = 0;
+    vector<string> visited = {};
     Dictionary dictionary = Dictionary("dict.txt");
     BinaryTree tree = BinaryTree(dictionary.allWords);
     string placeholder;
@@ -153,13 +186,26 @@ int main()
             gui.renderHangman(game.incorrectGuesses, difficulty);
             if (game.isGameWon())
             {
-                startNewGame(game, dictionary, placeholder);
-
-                streak++;
-                cout << game.incorrectGuesses << endl;
-                score = streak * 50;
+                visited.push_back(game.wordToGuess);
+                if (startNewGame(game, dictionary, placeholder, visited, difficulty))
+                {
+                    streak++;
+                    cout << game.incorrectGuesses << endl;
+                    score = streak * 50;
+                    gameFinished = game.isGameOver();
+                }
+                else
+                {
+                    gameFinished = true;
+                    loadGame = false;
+                    loadMainMenu = false;
+                    loadSettings = false;
+                    score = 0;
+                    streak = 0;
+                    visited.clear();
+                    game.reset();
+                }
             }
-            gameFinished = game.isGameOver();
         }
 
         SDL_Event event;
@@ -203,6 +249,7 @@ int main()
                         loadMainMenu = true;
                         game.reset();
                         streak = 0;
+                        score = 0;
                     }
                 }
                 if (loadMainMenu)
@@ -210,8 +257,9 @@ int main()
                     if (gui.isBtnArea(x, y, startRect))
                     {
                         gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
-                        startNewGame(game, dictionary, placeholder);
+                        startNewGame(game, dictionary, placeholder, visited, difficulty);
                         streak = 0;
+                        score = 0;
                         loadGame = true;
                         loadMainMenu = false;
                         loadSettings = false;
@@ -237,9 +285,9 @@ int main()
                         gui.playAudioChannel(gui.loadWAV("assets/click.mp3"));
 
                         gameFinished = false;
-                        startNewGame(game, dictionary, placeholder);
+                        startNewGame(game, dictionary, placeholder, visited, difficulty);
                         streak = 0;
-
+                        score = 0;
                         loadGame = true;
                     }
                 }
