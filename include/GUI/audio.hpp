@@ -24,7 +24,6 @@ class Audio
 
         // Close audio system
         closeAudio();
-
         Mix_Quit();
     }
 

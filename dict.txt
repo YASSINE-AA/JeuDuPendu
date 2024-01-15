@@ -3,11 +3,9 @@ computer
 hangman
 cplusplus
 developer
-algorithm
 software
 engineering
 variable
-function
 language
 inheritance
 polymorphism
@@ -32,7 +30,6 @@ linkedlist
 tree
 graph
 recursion
-iteration
 algorithm
 search
 sort
@@ -44,7 +41,6 @@ selection
 binary
 linear
 hash
-database
 networking
 internet
 protocol
@@ -87,17 +83,12 @@ git
 repository
 commit
 branch
-merge
 conflict
 version
 control
-debugging
 profiling
 optimization
-memory
 leak
-pointer
-reference
 memory
 allocation
 deallocation
@@ -105,7 +96,6 @@ virtual
 override
 interface
 lambda
-template
 function
 object
 oriented

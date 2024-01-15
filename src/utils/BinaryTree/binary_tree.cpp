@@ -20,6 +20,10 @@ void BinaryTree::insertWordHelper(BinaryTreeNode *&root, const string &word, int
     {
         if (root == nullptr)
             root = new BinaryTreeNode('\0');
+        else if (root->value == '\0')
+        {
+            cout << "word already exists! " << word << endl;
+        }
         else
             root->FD = new BinaryTreeNode('\0');
     }
