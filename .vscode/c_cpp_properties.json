@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include/BinaryTreeNode",
-                "${workspaceFolder}/include/BinaryTree"
+                "${workspaceFolder}/include/BinaryTree",
+                "${workspaceFolder}/include/GUI"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

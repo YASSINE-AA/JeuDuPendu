@@ -13,6 +13,7 @@
 #include "window.hpp"
 #include "states.hpp"
 #include "listBox.hpp"
+#include "textBox.hpp"
 
 using namespace std;
 
@@ -121,13 +122,14 @@ int main()
 
     // BG Music
     audio.openAudio();
-    audio.playMusic(audio.loadMusic("assets/bg.wav"), 20);
+    audio.playMusic(audio.loadMusic("assets/bg.mp3"), 20);
 
     // Custom components
-    ListBox listBox = ListBox(renderer, normalFont, dictionary.allWords, listBounds, 40);
+    ListBox listBox = ListBox(renderer, states, normalFont, dictionary.allWords, listBounds, 40);
+    TextBox textBox = TextBox(renderer, states, normalFont, "yassine", "test", 10, 10);
 
     // Sounds
-    Mix_Chunk* clickChunk = audio.loadWAV("assets/click.mp3");
+    Mix_Chunk *clickChunk = audio.loadWAV("assets/click.mp3");
 
     while (true)
     {
@@ -161,7 +163,8 @@ int main()
         {
             TTF_SetFontSize(titleFont, 30);
             renderer.renderFont(titleFont, "Dictionary", (SDL_Color){0, 0, 0}, 200, 39);
-            listBox.render();
+           listBox.render();
+           textBox.render();
         }
 
         else if (loadSettings)
@@ -255,10 +258,8 @@ int main()
                 renderer.cleanUp();
                 gui.destroy();
             }
-
             else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
-
                 int x;
                 int y;
                 states.getMousePosition(&x, &y);
@@ -367,10 +368,14 @@ int main()
                         loadSettings = false;
                     }
                 }
+                else if (loadOptions)
+                {
+                    cout << listBox.getLastHoveredItem() << endl;
+                }
             }
             else if (event.type == SDL_KEYDOWN)
             {
-
+                textBox.handleEvents(event);
                 char pressedChar = states.convertSDLKeyToChar(event.key.keysym.sym);
 
                 if (pressedChar != '\0')

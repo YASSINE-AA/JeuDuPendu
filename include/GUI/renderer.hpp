@@ -3,7 +3,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-
 #include <iostream>
 #include <vector>
 
@@ -134,6 +133,17 @@ public:
         }
     }
 
+    void renderRectFilled(SDL_Rect rect)
+    {
+        if (ren != nullptr)
+        {
+            SDL_SetRenderDrawColor(ren, 240, 240, 240, 255);
+            SDL_RenderFillRect(ren, &rect);
+            SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
+            SDL_RenderDrawRect(ren, &rect);
+        }
+    }
+
     // Font Functions
 
     TTF_Font *openFont(const char *file, int size)
@@ -147,8 +157,9 @@ public:
         return font;
     }
 
-    void renderFont(TTF_Font *font, const char *text, SDL_Color color, int x, int y)
+    int renderFont(TTF_Font *font, const char *text, SDL_Color color, int x, int y)
     {
+        int w;
         // Render text to surface, create texture, and render on screen
         SDL_Surface *textSurface = TTF_RenderText_Solid(font, text, color);
         if (textSurface == nullptr)
@@ -167,6 +178,7 @@ public:
         if (ren != nullptr)
         {
             SDL_Rect dest = {x, y, textSurface->w, textSurface->h};
+            w = textSurface->w;
             SDL_RenderCopy(ren, textTexture, NULL, &dest);
             SDL_DestroyTexture(textTexture);
         }
@@ -174,6 +186,7 @@ public:
         {
             throw std::runtime_error("Renderer not initialized!");
         }
+        return w;
     }
 
     // Game related

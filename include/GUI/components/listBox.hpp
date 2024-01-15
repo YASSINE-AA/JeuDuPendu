@@ -1,34 +1,41 @@
 #ifndef LISTBOX_HPP
 #define LISTBOX_HPP
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include "renderer.hpp"
-#include <iostream>
-#include <vector>
-
+#include "states.hpp"
 class ListBox
 {
 public:
     std::vector<std::string> data;
-    Renderer renderer;
-    int margin = 10;
-    int listSize;
-    int listPos;
-    int wordCount;
-    TTF_Font *font;
-    SDL_Rect dimensions;
-
-    int elementSpacing;
-    ListBox(Renderer renderer, TTF_Font *font, std::vector<std::string> data, SDL_Rect dimensions, int elementSpacing) : renderer(renderer), data(data), font(font), dimensions(dimensions), elementSpacing(elementSpacing)
+    ListBox(Renderer renderer, States states, TTF_Font *font, std::vector<std::string> data, SDL_Rect dimensions, int elementSpacing) : renderer(renderer), data(data), font(font), dimensions(dimensions), elementSpacing(elementSpacing)
     {
         listPos = dimensions.y + margin;
         wordCount = data.size();
         listSize = wordCount * elementSpacing;
+        originalSpacing = elementSpacing;
     }
     void render();
-    void addItem();
-    void removeItem();
+    void pushItem(std::string);
+    int getLastHoveredItem();
+    void removeItem(int idx);
     void handleEvents(SDL_Event e);
+
+private:
+    int originalSpacing;
+    int listSize;
+    int listPos;
+    int wordCount;
+    int lastHoveredItem;
+    Renderer renderer;
+    States states;
+    int margin = 10;
+    TTF_Font *font;
+    SDL_Rect dimensions;
+    int elementSpacing;
+    void updateParams()
+    {
+        wordCount = data.size();
+        listSize = wordCount * originalSpacing;
+    }
 };
 
 #endif
