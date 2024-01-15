@@ -133,14 +133,18 @@ public:
         }
     }
 
-    void renderRectFilled(SDL_Rect rect)
+    void renderRectFilled(SDL_Rect rect, SDL_Color border, SDL_Color inside)
     {
         if (ren != nullptr)
         {
-            SDL_SetRenderDrawColor(ren, 240, 240, 240, 255);
+            SDL_SetRenderDrawColor(ren, inside.r, inside.g, inside.b, inside.a);
             SDL_RenderFillRect(ren, &rect);
-            SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
+
+            SDL_SetRenderDrawColor(ren, border.r, border.g, border.b, border.a);
             SDL_RenderDrawRect(ren, &rect);
+
+            // Reset the render draw color to avoid affecting subsequent rendering
+            SDL_SetRenderDrawColor(ren, 0, 0, 0, 255); // reset
         }
     }
 

@@ -1,26 +1,27 @@
 #ifndef TEXTBOX_HPP
 #define TEXTBOX_HPP
-#include "renderer.hpp"
-#include "states.hpp"
 
-class TextBox
-{
+#include "customComponent.hpp"
+
+class TextBox : public CustomComponent {
 public:
-    int x, y;
-    TextBox(Renderer renderer, States states, TTF_Font *font, std::string text, std::string placeholder, int x, int y) : renderer(renderer), states(states), font(font), text(text), placeholder(placeholder), x(x), y(y) {}
-    void render();
+    TextBox(Renderer &renderer, States &states, TTF_Font *font, std::string text, std::string placeholder, int x, int y)
+        : CustomComponent(renderer, states), font(font), text(text), placeholder(placeholder), x(x), y(y) {}
+
+    void render() override;
     void setPlaceHolder(std::string placeholder);
+    
     void setText(std::string text);
+    void setPosition(int x, int y) override;
     std::string getText();
-    void handleEvents(SDL_Event e);
+    void handleEvents(SDL_Event e) override;
 
 private:
-    Renderer renderer;
-    States states;
+    int x, y;
     TTF_Font *font;
-    SDL_Rect dimensions;
     std::string text;
     std::string placeholder;
     int textWidth;
 };
+
 #endif

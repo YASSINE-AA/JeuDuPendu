@@ -10,6 +10,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
+#include <tuple>
 
 class Window
 {
@@ -18,6 +19,8 @@ public:
 
     void createWindow(int x, int y, int w, int h)
     {
+        width = w;
+        height = h;
         // Create SDL window
         win = SDL_CreateWindow("Hangman", x, y, w, h, SDL_WINDOW_SHOWN);
         if (win == nullptr)
@@ -39,10 +42,17 @@ public:
         }
     }
 
-    SDL_Window *getWindow(){return win;}
+    std::tuple<int, int> getWindowDimensions()
+    {
+        return {width, height};
+    }
+
+    SDL_Window *getWindow() { return win; }
 
 private:
     SDL_Window *win;
+    int width;
+    int height;
 };
 
 #endif

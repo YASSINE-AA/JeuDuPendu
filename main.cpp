@@ -12,8 +12,11 @@
 #include "renderer.hpp"
 #include "window.hpp"
 #include "states.hpp"
+
+// Custom Components
 #include "listBox.hpp"
 #include "textBox.hpp"
+#include "modal.hpp"
 
 using namespace std;
 
@@ -103,10 +106,15 @@ int main()
     renderer.createRenderer();
     TTF_Font *titleFont = renderer.openFont("assets/fonts/pacifico.ttf", 56);
     TTF_Font *normalFont = renderer.openFont("assets/fonts/roboto.ttf", 24);
+        TTF_Font *contentFont = renderer.openFont("assets/fonts/roboto.ttf", 14);
+
     const char *mutePath = "assets/mute.bmp";
     cout << (width / 2) - 50 << endl;
+
+    // Rect
     SDL_Rect startRect = {width / 2 - 90, height / 2 - 120, 194, 82};
     SDL_Rect menuRect = {10, 10, 36, 36};
+    SDL_Rect addRect = {450, 10, 36, 36};
     SDL_Rect quitRect = {width / 2 - 90, height / 2 + 100, 194, 82};
     SDL_Rect muteUnmuteRect = {10, 10, 36, 36};
     SDL_Rect playAgainRect = startRect;
@@ -126,7 +134,7 @@ int main()
 
     // Custom components
     ListBox listBox = ListBox(renderer, states, normalFont, dictionary.allWords, listBounds, 40);
-    TextBox textBox = TextBox(renderer, states, normalFont, "yassine", "test", 10, 10);
+    Modal modal = Modal(renderer, states, window, normalFont, contentFont, "Modify Dictionary!", "Type in the word you want to add or delete:");
 
     // Sounds
     Mix_Chunk *clickChunk = audio.loadWAV("assets/click.mp3");
@@ -163,8 +171,11 @@ int main()
         {
             TTF_SetFontSize(titleFont, 30);
             renderer.renderFont(titleFont, "Dictionary", (SDL_Color){0, 0, 0}, 200, 39);
-           listBox.render();
-           textBox.render();
+            renderer.render(renderer.getTexture("assets/add.bmp"), &addRect);
+            renderer.renderFont(normalFont, "Modify: ", (SDL_Color){0, 0, 0}, 360, 12);
+            listBox.render();
+           // textBox.render();
+            modal.render();
         }
 
         else if (loadSettings)
@@ -375,7 +386,7 @@ int main()
             }
             else if (event.type == SDL_KEYDOWN)
             {
-                textBox.handleEvents(event);
+                modal.handleEvents(event);
                 char pressedChar = states.convertSDLKeyToChar(event.key.keysym.sym);
 
                 if (pressedChar != '\0')

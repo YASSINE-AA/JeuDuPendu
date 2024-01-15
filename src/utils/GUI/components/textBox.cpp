@@ -1,8 +1,18 @@
 #include "textBox.hpp"
 
+void TextBox::setPosition(int newX, int newY)
+{
+    x = newX;
+    y = newY;
+}
+
+std::string TextBox::getText() {
+    return text;
+}
+
 void TextBox::render()
 {
-    renderer.renderRectFilled({x, y, 185, 28}); // render shape
+    renderer.renderRectFilled({x, y, 185, 28}, {0, 0, 0, 255}, {240, 240, 240, 255}); // render shape
 
     // render placeholder
     if (text == "")

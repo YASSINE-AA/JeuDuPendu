@@ -29,7 +29,8 @@ void ListBox::render()
     elementSpacing = 0;
 }
 
-int ListBox::getLastHoveredItem() {
+int ListBox::getLastHoveredItem()
+{
     return lastHoveredItem;
 }
 
