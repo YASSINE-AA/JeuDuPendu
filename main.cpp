@@ -97,6 +97,7 @@ int main()
     int width = 500;
     int height = 600;
     int listPos = 110;
+    int listSize = dictionary.allWords.size() * 40;
     window.createWindow(0, 0, width, height);
     Renderer renderer = Renderer(window.getWindow());
     renderer.createRenderer();
@@ -158,7 +159,8 @@ int main()
             renderer.renderFont(titleFont, "Dictionary", (SDL_Color){0, 0, 0}, 200, 39);
             for (size_t i = 0; i < dictionary.allWords.size(); ++i)
             {
-                if(listPos + offset - listBounds.y > 0) renderer.renderFont(normalFont, (to_string(i + 1) + " " + dictionary.allWords[i]).c_str(), (SDL_Color){0, 0, 0}, 200, listPos + offset);
+                if (listPos + offset - listBounds.y > 0)
+                    renderer.renderFont(normalFont, (to_string(i + 1) + " " + dictionary.allWords[i]).c_str(), (SDL_Color){0, 0, 0}, 200, listPos + offset);
                 offset += 40;
                 if (listPos + offset - 100 > listBounds.h)
                     break;
@@ -260,19 +262,21 @@ int main()
             else if (event.type == SDL_MOUSEWHEEL)
             {
                 int y = event.wheel.y;
-                mouseWheelTouched = true;
+
                 if (y == 1)
                 {
                     // UP
-
-                    listPos -= 40;
+                    if (listPos < 110)
+                    {
+                        listPos += 40;
+                    }
                 }
                 else
                 {
                     // DOWN
-                    if (listPos < 110)
+                    if (listBounds.y - listPos < listSize - 12 * 40)
                     {
-                        listPos += 40;
+                        listPos -= 40;
                     }
                 }
             }
