@@ -147,7 +147,7 @@ public:
         return font;
     }
 
-    SDL_Texture *renderFont(TTF_Font *font, const char *text, SDL_Color color, int x, int y)
+    void renderFont(TTF_Font *font, const char *text, SDL_Color color, int x, int y)
     {
         // Render text to surface, create texture, and render on screen
         SDL_Surface *textSurface = TTF_RenderText_Solid(font, text, color);
@@ -168,15 +168,12 @@ public:
         {
             SDL_Rect dest = {x, y, textSurface->w, textSurface->h};
             SDL_RenderCopy(ren, textTexture, NULL, &dest);
+            SDL_DestroyTexture(textTexture);
         }
         else
         {
             throw std::runtime_error("Renderer not initialized!");
         }
-
-        textures.push_back(textTexture);
-
-        return textTexture;
     }
 
     // Game related

@@ -72,6 +72,7 @@ int main()
     bool gameFinished = false;
     bool loadSettings = false;
     bool loadOptions = false;
+    bool mouseWheelTouched = false;
 
     // Game Init
     int difficulty = 0;
@@ -82,8 +83,9 @@ int main()
     BinaryTree tree = BinaryTree(dictionary.allWords);
     string placeholder;
     Game game = Game(tree, difficulty);
-    int offset = 10;
+    int offset = 0;
     int multiplier = 1;
+
     // GUI Init
     GUI gui = GUI();
     Audio audio = Audio();
@@ -94,16 +96,16 @@ int main()
     gui.initRenderer();
     int width = 500;
     int height = 600;
-
+    int listPos = 110;
     window.createWindow(0, 0, width, height);
     Renderer renderer = Renderer(window.getWindow());
     renderer.createRenderer();
     TTF_Font *titleFont = renderer.openFont("assets/fonts/pacifico.ttf", 56);
+    TTF_Font *normalFont = renderer.openFont("assets/fonts/roboto.ttf", 24);
     const char *mutePath = "assets/mute.bmp";
     cout << (width / 2) - 50 << endl;
     SDL_Rect startRect = {width / 2 - 90, height / 2 - 120, 194, 82};
     SDL_Rect menuRect = {10, 10, 36, 36};
-    // SDL_Rect settingsRect = {width / 2 - 100, height / 2 - 20, 194, 82};
     SDL_Rect quitRect = {width / 2 - 90, height / 2 + 100, 194, 82};
     SDL_Rect muteUnmuteRect = {10, 10, 36, 36};
     SDL_Rect playAgainRect = startRect;
@@ -113,12 +115,14 @@ int main()
     SDL_Rect selectionRect = easyRect;
     SDL_Rect confirmRect = {400, 470, 60, 60};
     SDL_Rect optionsRect = {width / 2 - 90, height / 2 - 10, 194, 82};
+    SDL_Rect listBounds = {100, 100, 350, 480};
     playAgainRect.y += 50;
     playAgainRect.x += 20;
 
     // BG Music
     audio.openAudio();
     audio.playMusic(audio.loadMusic("assets/bg.wav"), 20);
+
     while (true)
     {
         renderer.clearRender();
@@ -145,14 +149,21 @@ int main()
 
             renderer.render(renderer.getTexture("assets/start.bmp"), &startRect);
             renderer.render(renderer.getTexture("assets/options.bmp"), &optionsRect);
-            // renderer.render(renderer.getTexture("assets/settings.bmp"), &settingsRect);
             renderer.render(renderer.getTexture("assets/quit.bmp"), &quitRect);
         }
         else if (loadOptions)
         {
             TTF_SetFontSize(titleFont, 30);
-
-            renderer.renderFont(titleFont, "Dictionary", (SDL_Color){0, 0, 0}, 200, 90);
+            renderer.renderRect(listBounds);
+            renderer.renderFont(titleFont, "Dictionary", (SDL_Color){0, 0, 0}, 200, 39);
+            for (size_t i = 0; i < dictionary.allWords.size(); ++i)
+            {
+                if(listPos + offset - listBounds.y > 0) renderer.renderFont(normalFont, (to_string(i + 1) + " " + dictionary.allWords[i]).c_str(), (SDL_Color){0, 0, 0}, 200, listPos + offset);
+                offset += 40;
+                if (listPos + offset - 100 > listBounds.h)
+                    break;
+            }
+            offset = 0;
         }
 
         else if (loadSettings)
@@ -245,6 +256,25 @@ int main()
                 audio.cleanUp();
                 renderer.cleanUp();
                 gui.destroy();
+            }
+            else if (event.type == SDL_MOUSEWHEEL)
+            {
+                int y = event.wheel.y;
+                mouseWheelTouched = true;
+                if (y == 1)
+                {
+                    // UP
+
+                    listPos -= 40;
+                }
+                else
+                {
+                    // DOWN
+                    if (listPos < 110)
+                    {
+                        listPos += 40;
+                    }
+                }
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
