@@ -19,12 +19,18 @@ public:
     void pushItem(std::string);
     int getLastHoveredItem();
     void removeItem(int idx);
+    void listAllItems() {
+        for(const std::string& word : data) {
+            std::cout << word << std::endl;
+        }
+    }
     void setPosition(int x, int y) override
     {
         dimensions.x = x;
         dimensions.y = y;
     }
     void handleEvents(SDL_Event e) override;
+    void updateParams();
 
 private:
     std::vector<std::string> data;
@@ -37,12 +43,6 @@ private:
     TTF_Font *font;
     SDL_Rect dimensions;
     int elementSpacing;
-
-    void updateParams()
-    {
-        wordCount = data.size();
-        listSize = wordCount * originalSpacing;
-    }
 };
 
 #endif

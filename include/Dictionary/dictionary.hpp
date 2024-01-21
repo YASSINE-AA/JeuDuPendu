@@ -30,7 +30,6 @@ public:
     }
 
     int randomIndex = std::rand() % validWords.size();
-    std::cout << validWords[randomIndex] << std::endl;
     return validWords[randomIndex];
 }
 

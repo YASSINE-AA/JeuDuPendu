@@ -9,8 +9,6 @@ void BinaryTree::printTreeHelper(BinaryTreeNode *root, int space, int count)
 
     printTreeHelper(root->FD, space, count);
 
-    std::cout << std::setw(space) << root->value << std::endl;
-
     printTreeHelper(root->FG, space, count);
 }
 
@@ -136,6 +134,42 @@ vector<int> BinaryTree::getLetterPositionHelper(BinaryTreeNode *root, char lette
     else
     {
         return getLetterPositionHelper(root->FD, letter, codeWord, pos, res);
+    }
+}
+
+int BinaryTree::getNumberOfRightChildren(BinaryTreeNode *root, int number)
+{
+    if (root == nullptr)
+    {
+        return number;
+    }
+    else
+    {
+        return getNumberOfRightChildren(root->FD, number + 1);
+    }
+}
+
+string BinaryTree::getRandomWordHelper(BinaryTreeNode *root, string finalWord)
+{
+    if (root == nullptr)
+    {
+        return finalWord;
+    }
+    else if (root->value == '\0')
+    {
+        return finalWord;
+    }
+    else
+    {
+        int randomIndx = rand() % getNumberOfRightChildren(root, 0);
+        BinaryTreeNode *p = root;
+        while (randomIndx > 0)
+        {
+            p = p->FD;
+            randomIndx--;
+        }
+        finalWord += p->value;
+        return getRandomWordHelper(p->FG, finalWord);
     }
 }
 

@@ -22,7 +22,6 @@ using namespace std;
 
 bool startNewGame(Game &game, Dictionary dictionary, string &placeholder, vector<string> visited, int difficulty)
 {
-    cout << difficulty << endl;
     game.reset();
     game.setDifficulty(difficulty);
     int borneMin;
@@ -48,7 +47,6 @@ bool startNewGame(Game &game, Dictionary dictionary, string &placeholder, vector
         break;
     }
     string randomWord = dictionary.getRandomWord(borneMin, borneMax, visited);
-    cout << randomWord.length() << endl;
     if (randomWord != "#")
     {
         placeholder = randomWord;
@@ -61,7 +59,6 @@ bool startNewGame(Game &game, Dictionary dictionary, string &placeholder, vector
     }
     else
     {
-        cout << "dictionnary is empty" << endl;
         return false;
     }
 }
@@ -76,6 +73,7 @@ int main()
     bool loadSettings = false;
     bool loadOptions = false;
     bool mouseWheelTouched = false;
+    bool renderModal = false;
 
     // Game Init
     int difficulty = 0;
@@ -106,10 +104,9 @@ int main()
     renderer.createRenderer();
     TTF_Font *titleFont = renderer.openFont("assets/fonts/pacifico.ttf", 56);
     TTF_Font *normalFont = renderer.openFont("assets/fonts/roboto.ttf", 24);
-        TTF_Font *contentFont = renderer.openFont("assets/fonts/roboto.ttf", 14);
+    TTF_Font *contentFont = renderer.openFont("assets/fonts/roboto.ttf", 14);
 
     const char *mutePath = "assets/mute.bmp";
-    cout << (width / 2) - 50 << endl;
 
     // Rect
     SDL_Rect startRect = {width / 2 - 90, height / 2 - 120, 194, 82};
@@ -134,7 +131,7 @@ int main()
 
     // Custom components
     ListBox listBox = ListBox(renderer, states, normalFont, dictionary.allWords, listBounds, 40);
-    Modal modal = Modal(renderer, states, window, normalFont, contentFont, "Modify Dictionary!", "Type in the word you want to add or delete:");
+    Modal modal = Modal(renderer, states, window, normalFont, contentFont, "Modify Dictionary!", "Type in the word you want to add or delete:", listBox);
 
     // Sounds
     Mix_Chunk *clickChunk = audio.loadWAV("assets/click.mp3");
@@ -173,9 +170,12 @@ int main()
             renderer.renderFont(titleFont, "Dictionary", (SDL_Color){0, 0, 0}, 200, 39);
             renderer.render(renderer.getTexture("assets/add.bmp"), &addRect);
             renderer.renderFont(normalFont, "Modify: ", (SDL_Color){0, 0, 0}, 360, 12);
+
             listBox.render();
-           // textBox.render();
-            modal.render();
+            if (renderModal)
+            {
+                modal.render();
+            }
         }
 
         else if (loadSettings)
@@ -237,7 +237,6 @@ int main()
                 if (startNewGame(game, dictionary, placeholder, visited, difficulty))
                 {
                     streak++;
-                    cout << game.incorrectGuesses << endl;
                     score = streak * 50;
                 }
                 else
@@ -263,6 +262,7 @@ int main()
         while (SDL_PollEvent(&event))
         {
             listBox.handleEvents(event);
+            modal.handleEvents(event);
             if (event.type == SDL_QUIT)
             {
                 audio.cleanUp();
@@ -381,12 +381,14 @@ int main()
                 }
                 else if (loadOptions)
                 {
-                    cout << listBox.getLastHoveredItem() << endl;
+                    if (states.isBtnArea(x, y, addRect))
+                    {
+                        renderModal = !renderModal;
+                    }
                 }
             }
             else if (event.type == SDL_KEYDOWN)
             {
-                modal.handleEvents(event);
                 char pressedChar = states.convertSDLKeyToChar(event.key.keysym.sym);
 
                 if (pressedChar != '\0')

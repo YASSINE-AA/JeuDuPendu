@@ -58,8 +58,6 @@ public:
     {
         if (incorrectGuesses == maxGuesses)
         {
-            cout << guessedChars.size() << endl;
-            cout << "Game over!" << endl;
             return true;
         }
         return false;
@@ -70,7 +68,6 @@ public:
 
         if (correctGuesses == wordToGuess.length())
         {
-            cout << "You have won!" << endl;
             return true;
         }
         return false;
@@ -101,7 +98,6 @@ public:
         }
         else
         {
-            cout << "You have already guessed that word!" << endl;
             return {};
         }
     };

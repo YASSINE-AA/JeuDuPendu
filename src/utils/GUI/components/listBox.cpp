@@ -59,6 +59,14 @@ void ListBox::handleEvents(SDL_Event e)
     }
 }
 
+void ListBox::updateParams()
+{
+    std::cout << "updateParams called" << std::endl;
+    wordCount = data.size();
+     std::cout << wordCount << std::endl;
+    listSize = wordCount * originalSpacing;
+}
+
 void ListBox::pushItem(std::string item)
 {
     data.push_back(item);
