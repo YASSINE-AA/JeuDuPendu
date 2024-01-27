@@ -181,6 +181,8 @@ BinaryTreeNode *BinaryTree::getRandomCompatibleNode(BinaryTreeNode *node, int mi
 
     if (compatibleNodes.size() > 0)
         return compatibleNodes[rand() % compatibleNodes.size()];
+    else
+        return nullptr;
 }
 
 string BinaryTree::getRandomWordHelper(int minLength, int maxLength, BinaryTreeNode *root, string finalWord)
@@ -196,8 +198,15 @@ string BinaryTree::getRandomWordHelper(int minLength, int maxLength, BinaryTreeN
     else
     {
         BinaryTreeNode *randomNode = getRandomCompatibleNode(root, minLength, maxLength, finalWord);
-        finalWord += randomNode->value;
-        return getRandomWordHelper(minLength, maxLength, randomNode->FG, finalWord);
+        if (randomNode)
+        {
+            finalWord += randomNode->value;
+            return getRandomWordHelper(minLength, maxLength, randomNode->FG, finalWord);
+        }
+        else
+        {
+            return "";
+        }
     }
 }
 
