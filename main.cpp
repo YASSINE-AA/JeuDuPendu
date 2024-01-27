@@ -82,6 +82,7 @@ int main()
     vector<string> visited = {};
     Dictionary dictionary = Dictionary("dict.txt");
     BinaryTree tree = BinaryTree(dictionary.allWords);
+    cout << tree.getRandomWord(2, 3) << endl;
     string placeholder;
     Game game = Game(tree, difficulty);
     int offset = 0;

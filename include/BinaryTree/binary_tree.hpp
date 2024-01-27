@@ -38,9 +38,9 @@ public:
         printTreeHelper(tete);
     }
 
-    string getRandomWord()
+    string getRandomWord(int minLength, int maxLength)
     {
-        return getRandomWordHelper(tete);
+        return getRandomWordHelper(minLength, maxLength, tete);
     }
 
     vector<int> getLetterPosition(char letter, const string &codeWord)
@@ -50,8 +50,10 @@ public:
 
 private:
     BinaryTreeNode *tete;
-    string getRandomWordHelper(BinaryTreeNode *root, string finalWord = "");
+    string getRandomWordHelper(int minLength, int maxLength, BinaryTreeNode *root, string finalWord = "");
+    BinaryTreeNode *getRandomCompatibleNode(BinaryTreeNode *node, int minLength, int maxLength, string finalWord);
     int getNumberOfRightChildren(BinaryTreeNode *root, int number = 0);
+    int getNumberOfLeftChildren(BinaryTreeNode *root, int number = 0);
     void createFromDict(vector<string> dictionary);
     void printTreeHelper(BinaryTreeNode *root, int space = 0, int count = 5);
     void insertWordHelper(BinaryTreeNode *&root, const string &word, int pos = 0);

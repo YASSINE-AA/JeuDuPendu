@@ -149,7 +149,41 @@ int BinaryTree::getNumberOfRightChildren(BinaryTreeNode *root, int number)
     }
 }
 
-string BinaryTree::getRandomWordHelper(BinaryTreeNode *root, string finalWord)
+int BinaryTree::getNumberOfLeftChildren(BinaryTreeNode *root, int number)
+{
+    if (root == nullptr)
+    {
+        return -1;
+    }
+    else if (root->value == '\0')
+    {
+        return number;
+    }
+    else
+    {
+        return getNumberOfLeftChildren(root->FG, number + 1);
+    }
+}
+
+BinaryTreeNode *BinaryTree::getRandomCompatibleNode(BinaryTreeNode *node, int minLength, int maxLength, string finalWord)
+{
+    int randomIndx = getNumberOfRightChildren(node, 0);
+    vector<BinaryTreeNode *> compatibleNodes = {};
+    BinaryTreeNode *p = node;
+    while (randomIndx > 0)
+    {
+        int expectedLength = getNumberOfLeftChildren(p, 0) + finalWord.length();
+        if (expectedLength >= minLength && expectedLength <= maxLength)
+            compatibleNodes.push_back(p);
+        p = p->FD;
+        randomIndx--;
+    };
+
+    if (compatibleNodes.size() > 0)
+        return compatibleNodes[rand() % compatibleNodes.size()];
+}
+
+string BinaryTree::getRandomWordHelper(int minLength, int maxLength, BinaryTreeNode *root, string finalWord)
 {
     if (root == nullptr)
     {
@@ -161,15 +195,9 @@ string BinaryTree::getRandomWordHelper(BinaryTreeNode *root, string finalWord)
     }
     else
     {
-        int randomIndx = rand() % getNumberOfRightChildren(root, 0);
-        BinaryTreeNode *p = root;
-        while (randomIndx > 0)
-        {
-            p = p->FD;
-            randomIndx--;
-        }
-        finalWord += p->value;
-        return getRandomWordHelper(p->FG, finalWord);
+        BinaryTreeNode *randomNode = getRandomCompatibleNode(root, minLength, maxLength, finalWord);
+        finalWord += randomNode->value;
+        return getRandomWordHelper(minLength, maxLength, randomNode->FG, finalWord);
     }
 }
 
