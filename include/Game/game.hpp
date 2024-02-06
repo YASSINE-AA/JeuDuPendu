@@ -104,6 +104,7 @@ public:
 
     void reset()
     {
+        
         correctGuesses = 0;
         incorrectGuesses = 0;
         guessedChars.clear();

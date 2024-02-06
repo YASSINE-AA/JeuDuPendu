@@ -2,8 +2,10 @@
 #include <iomanip>
 #include <vector>
 #include <forward_list>
-#include "dictionary.hpp"
-#include "binary_tree.hpp"
+// Custom Components
+#include "listBox.hpp"
+#include "textBox.hpp"
+#include "deleteModal.hpp"
 #include "game.hpp"
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,14 +15,10 @@
 #include "window.hpp"
 #include "states.hpp"
 
-// Custom Components
-#include "listBox.hpp"
-#include "textBox.hpp"
-#include "modal.hpp"
 
 using namespace std;
 
-bool startNewGame(Game &game, Dictionary dictionary, string &placeholder, vector<string> visited, int difficulty)
+bool startNewGame(Game &game, Dictionary dictionary, string &placeholder, vector<string> &visited, int difficulty)
 {
     game.reset();
     game.setDifficulty(difficulty);
@@ -46,9 +44,11 @@ bool startNewGame(Game &game, Dictionary dictionary, string &placeholder, vector
     default:
         break;
     }
-    string randomWord = dictionary.getRandomWord(borneMin, borneMax, visited);
+    string randomWord = game.wordTree.getRandomWord(borneMin, borneMax, visited);
+
     if (randomWord != "#")
     {
+        std ::cout << "finished" << std::endl;
         placeholder = randomWord;
         for (char &c : placeholder)
         {
@@ -72,6 +72,7 @@ int main()
     bool gameFinished = false;
     bool loadSettings = false;
     bool loadOptions = false;
+
     bool mouseWheelTouched = false;
     bool renderModal = false;
 
@@ -82,7 +83,6 @@ int main()
     vector<string> visited = {};
     Dictionary dictionary = Dictionary("dict.txt");
     BinaryTree tree = BinaryTree(dictionary.allWords);
-    cout << tree.getRandomWord(2, 3) << endl;
     string placeholder;
     Game game = Game(tree, difficulty);
     int offset = 0;
@@ -94,7 +94,7 @@ int main()
     Window window = Window();
     States states = States();
     gui.init();
-    gui.initAudio();
+    // gui.initAudio();
     gui.initRenderer();
     int width = 500;
     int height = 600;
@@ -127,15 +127,14 @@ int main()
     playAgainRect.x += 20;
 
     // BG Music
-    audio.openAudio();
-    audio.playMusic(audio.loadMusic("assets/bg.mp3"), 20);
+    // audio.openAudio();
+    // audio.playMusic(audio.loadMusic("assets/bg.mp3"), 20);
 
     // Custom components
-    ListBox listBox = ListBox(renderer, states, normalFont, dictionary.allWords, listBounds, 40);
-    Modal modal = Modal(renderer, states, window, normalFont, contentFont, "Modify Dictionary!", "Type in the word you want to add or delete:", listBox);
+    ListBox listBox = ListBox(renderer, states, window, normalFont, contentFont, dictionary, tree, listBounds, 40);
 
     // Sounds
-    Mix_Chunk *clickChunk = audio.loadWAV("assets/click.mp3");
+    // Mix_Chunk *clickChunk = audio.loadWAV("assets/click.mp3");
 
     while (true)
     {
@@ -169,14 +168,8 @@ int main()
         {
             TTF_SetFontSize(titleFont, 30);
             renderer.renderFont(titleFont, "Dictionary", (SDL_Color){0, 0, 0}, 200, 39);
-            renderer.render(renderer.getTexture("assets/add.bmp"), &addRect);
-            renderer.renderFont(normalFont, "Modify: ", (SDL_Color){0, 0, 0}, 360, 12);
 
             listBox.render();
-            if (renderModal)
-            {
-                modal.render();
-            }
         }
 
         else if (loadSettings)
@@ -199,17 +192,9 @@ int main()
                 SDL_Delay(1000);
 
             loadGame = false;
-            char *msg;
-            if (game.isGameOver())
-            {
-                msg = (char *)"You have lost!";
-                TTF_SetFontSize(titleFont, 30);
 
-                renderer.renderFont(titleFont, (char *)((string) "The word was: " + (string)game.wordToGuess).c_str(), (SDL_Color){0, 0, 0}, 120, 340);
-            }
+            const char *msg = ("score: " + std::to_string(score)).c_str();
 
-            else
-                msg = (char *)"You have won!";
             TTF_SetFontSize(titleFont, 54);
 
             renderer.renderFont(titleFont, msg, (SDL_Color){0, 0, 0}, 100, 40);
@@ -232,38 +217,32 @@ int main()
 
             renderer.renderFont(titleFont, (char *)placeholder.c_str(), (SDL_Color){0, 0, 0}, 100, 40);
             renderer.renderHangman(game.incorrectGuesses, difficulty);
-            if (game.isGameWon())
+            if (game.isGameWon() || game.isGameOver())
             {
-                visited.push_back(game.wordToGuess);
-                if (startNewGame(game, dictionary, placeholder, visited, difficulty))
+                if (game.isGameWon())
                 {
                     streak++;
                     score = streak * 50;
                 }
-                else
+                if (!startNewGame(game, dictionary, placeholder, visited, difficulty))
                 {
                     gameFinished = true;
                     loadGame = false;
                     loadMainMenu = false;
                     loadSettings = false;
                     loadOptions = false;
-                    score = 0;
-                    streak = 0;
-                    visited.clear();
-                    game.reset();
                 }
-            }
-            else
-            {
-                gameFinished = game.isGameOver();
             }
         }
 
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
-            listBox.handleEvents(event);
-            modal.handleEvents(event);
+            
+            if (loadOptions)
+            {
+                listBox.handleEvents(event);
+            }
             if (event.type == SDL_QUIT)
             {
                 audio.cleanUp();
@@ -277,7 +256,7 @@ int main()
                 states.getMousePosition(&x, &y);
                 if (states.isBtnArea(x, y, muteUnmuteRect))
                 {
-                    audio.playAudioChannel(clickChunk);
+                    // audio.playAudioChannel(clickChunk);
                     if (!audio.isMusicPaused())
                     {
                         mutePath = "assets/unmute.bmp";
@@ -295,11 +274,13 @@ int main()
                     if (states.isBtnArea(x, y, menuRect))
                     {
 
-                        audio.playAudioChannel(clickChunk);
+                        //  audio.playAudioChannel(clickChunk);
 
                         gameFinished = false;
                         loadGame = false;
                         loadMainMenu = true;
+                                            loadOptions = false;
+
                         game.reset();
                         streak = 0;
                         score = 0;
@@ -309,14 +290,14 @@ int main()
                 {
                     if (states.isBtnArea(x, y, startRect))
                     {
-                        audio.playAudioChannel(clickChunk);
+                        //    audio.playAudioChannel(clickChunk);
                         loadOptions = false;
                         loadMainMenu = false;
                         loadSettings = true;
                     }
                     else if (states.isBtnArea(x, y, quitRect))
                     {
-                        audio.playAudioChannel(clickChunk);
+                        //   audio.playAudioChannel(clickChunk);
                         SDL_Delay(1000);
                         audio.cleanUp();
                         renderer.cleanUp();
@@ -325,7 +306,7 @@ int main()
 
                     else if (states.isBtnArea(x, y, optionsRect))
                     {
-                        audio.playAudioChannel(clickChunk);
+                        //   audio.playAudioChannel(clickChunk);
 
                         loadOptions = true;
                         loadMainMenu = false;
@@ -338,41 +319,47 @@ int main()
                 {
                     if (states.isBtnArea(x, y, playAgainRect))
                     {
-                        audio.playAudioChannel(clickChunk);
-
-                        gameFinished = false;
-                        startNewGame(game, dictionary, placeholder, visited, difficulty);
-                        streak = 0;
-                        score = 0;
-                        loadGame = true;
+                        // audio.playAudioChannel(clickChunk);
+                        if (!startNewGame(game, dictionary, placeholder, visited, difficulty))
+                        {
+                            loadGame = true;
+                            loadMainMenu = false;
+                            loadSettings = false;
+                            loadOptions = false;
+                            gameFinished = false;
+                            score = 0;
+                            streak = 0;
+                            visited.clear();
+                            game.reset();
+                        }
                     }
                 }
                 else if (loadSettings)
                 {
                     if (states.isBtnArea(x, y, easyRect))
                     {
-                        audio.playAudioChannel(clickChunk);
+                        //    audio.playAudioChannel(clickChunk);
                         selectionRect = easyRect;
                         difficulty = 0;
                         game.setDifficulty(0);
                     }
                     else if (states.isBtnArea(x, y, normalRect))
                     {
-                        audio.playAudioChannel(clickChunk);
+                        //    audio.playAudioChannel(clickChunk);
                         selectionRect = normalRect;
                         difficulty = 1;
                         game.setDifficulty(1);
                     }
                     else if (states.isBtnArea(x, y, difficultRect))
                     {
-                        audio.playAudioChannel(clickChunk);
+                        //    audio.playAudioChannel(clickChunk);
                         selectionRect = difficultRect;
                         difficulty = 2;
                         game.setDifficulty(2);
                     }
                     else if (states.isBtnArea(x, y, confirmRect))
                     {
-                        audio.playAudioChannel(clickChunk);
+                        //   audio.playAudioChannel(clickChunk);
                         startNewGame(game, dictionary, placeholder, visited, difficulty);
                         streak = 0;
                         score = 0;
@@ -382,6 +369,7 @@ int main()
                 }
                 else if (loadOptions)
                 {
+                    listBox.handleEvents(event);
                     if (states.isBtnArea(x, y, addRect))
                     {
                         renderModal = !renderModal;

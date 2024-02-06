@@ -12,7 +12,7 @@ void BinaryTree::printTreeHelper(BinaryTreeNode *root, int space, int count)
     printTreeHelper(root->FG, space, count);
 }
 
-void BinaryTree::insertWordHelper(BinaryTreeNode *&root, const string &word, int pos)
+void BinaryTree::insertWordHelper(BinaryTreeNode *&root, const std::string &word, int pos)
 {
     if (pos == word.length())
     {
@@ -20,7 +20,7 @@ void BinaryTree::insertWordHelper(BinaryTreeNode *&root, const string &word, int
             root = new BinaryTreeNode('\0');
         else if (root->value == '\0')
         {
-            cout << "word already exists! " << word << endl;
+            std::cout << "word already exists! " << word << std::endl;
         }
         else
             root->FD = new BinaryTreeNode('\0');
@@ -60,7 +60,7 @@ void BinaryTree::insertWordHelper(BinaryTreeNode *&root, const string &word, int
     }
 }
 
-bool BinaryTree::isWordInTreeHelper(BinaryTreeNode *root, const string &word, int pos)
+bool BinaryTree::isWordInTreeHelper(BinaryTreeNode *root, const std::string &word, int pos)
 {
     if (root == nullptr)
     {
@@ -83,11 +83,11 @@ bool BinaryTree::isWordInTreeHelper(BinaryTreeNode *root, const string &word, in
     }
 }
 
-void BinaryTree::deleteWordHelper(BinaryTreeNode *&root, string word, BinaryTreeNode *&nodeToRemove, int pos)
+void BinaryTree::deleteWordHelper(BinaryTreeNode *&root, std::string word, BinaryTreeNode *&nodeToRemove, int pos)
 {
     if (root == nullptr)
     {
-        cout << "Word is not in tree!" << endl;
+        std::cout << "Word is not in tree!" << std::endl;
     }
     else if (pos == word.length())
     {
@@ -113,7 +113,7 @@ void BinaryTree::deleteWordHelper(BinaryTreeNode *&root, string word, BinaryTree
     }
 }
 
-vector<int> BinaryTree::getLetterPositionHelper(BinaryTreeNode *root, char letter, const string &codeWord, int pos, vector<int> res)
+std::vector<int> BinaryTree::getLetterPositionHelper(BinaryTreeNode *root, char letter, const std::string &codeWord, int pos, std::vector<int> res)
 {
     if (root == nullptr)
     {
@@ -165,55 +165,53 @@ int BinaryTree::getNumberOfLeftChildren(BinaryTreeNode *root, int number)
     }
 }
 
-BinaryTreeNode *BinaryTree::getRandomCompatibleNode(BinaryTreeNode *node, int minLength, int maxLength, string finalWord)
-{
-    int randomIndx = getNumberOfRightChildren(node, 0);
-    vector<BinaryTreeNode *> compatibleNodes = {};
-    BinaryTreeNode *p = node;
-    while (randomIndx > 0)
-    {
-        int expectedLength = getNumberOfLeftChildren(p, 0) + finalWord.length();
-        if (expectedLength >= minLength && expectedLength <= maxLength)
-            compatibleNodes.push_back(p);
-        p = p->FD;
-        randomIndx--;
-    };
 
-    if (compatibleNodes.size() > 0)
-        return compatibleNodes[rand() % compatibleNodes.size()];
-    else
-        return nullptr;
-}
-
-string BinaryTree::getRandomWordHelper(int minLength, int maxLength, BinaryTreeNode *root, string finalWord)
+std::string BinaryTree::getRandomWordHelper(BinaryTreeNode *root, std::string finalWord)
 {
+
     if (root == nullptr)
     {
         return finalWord;
     }
+
     else if (root->value == '\0')
     {
-        return finalWord;
-    }
-    else
-    {
-        BinaryTreeNode *randomNode = getRandomCompatibleNode(root, minLength, maxLength, finalWord);
-        if (randomNode)
+        if (root->FD == nullptr)
         {
-            finalWord += randomNode->value;
-            return getRandomWordHelper(minLength, maxLength, randomNode->FG, finalWord);
+            return finalWord;
         }
         else
         {
-            return "";
+            if (rand() % 2)
+                return getRandomWordHelper(root->FD, finalWord);
+            else
+            {
+                return finalWord;
+            }
+        }
+    }
+    else
+    {
+        if (rand() % 2)
+        {
+            finalWord += root->value;
+            return getRandomWordHelper(root->FG, finalWord);
+        }
+        else
+        {
+            if (root->FD != nullptr)
+                return getRandomWordHelper(root->FD, finalWord);
+
+            finalWord += root->value;
+            return getRandomWordHelper(root->FG, finalWord);
         }
     }
 }
 
-void BinaryTree::createFromDict(vector<string> dictionary)
+void BinaryTree::createFromDict(std::vector<std::string> dictionary)
 {
     BinaryTreeNode *root = nullptr;
-    for (const string &word : dictionary)
+    for (const std::string &word : dictionary)
     {
         insertWord(word);
     }

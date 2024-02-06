@@ -4,6 +4,8 @@
 #include "renderer.hpp"
 #include "window.hpp"
 #include "states.hpp"
+#include "dictionary.hpp"
+#include "binary_tree.hpp"
 
 class CustomComponent
 {
