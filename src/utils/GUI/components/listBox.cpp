@@ -32,6 +32,7 @@ void ListBox::render()
     }
     renderer.renderFont(font, "Add a word", color, addButtonDimensions.x + margin, addButtonDimensions.y + margin);
     deleteModal.render();
+    addModal.render();
     elementSpacing = 0;
 }
 
@@ -67,9 +68,11 @@ void ListBox::handleEvents(SDL_Event e)
     }
     else if (e.type == SDL_MOUSEBUTTONDOWN)
     {
+
         int mouseX, mouseY;
         states.getMousePosition(&mouseX, &mouseY);
-        if (deleteModal.isClosed() && states.isBtnArea(mouseX, mouseY, dimensions))
+
+        if (deleteModal.isClosed() && states.isBtnArea(mouseX, mouseY, dimensions) && !states.isBtnArea(mouseX, mouseY, addButtonDimensions))
         {
             indexToDelete = getLastHoveredItem();
             deleteModal.setWord(data[indexToDelete]);
@@ -81,18 +84,42 @@ void ListBox::handleEvents(SDL_Event e)
             if (deleteModal.getSubmit())
             {
                 std::string word = data[indexToDelete];
-
                 // delete from tree
                 tree.deleteWord(word);
                 // delete from listbox
                 removeItem(indexToDelete);
                 // delete from dictionary
-
                 dictionary.deleteFromFile("dict.txt", word);
                 deleteModal.setVisibilty(false);
                 deleteModal.resetSubmit();
             }
         }
+
+        if (addModal.isClosed() && states.isBtnArea(mouseX, mouseY, addButtonDimensions))
+        {
+            indexToDelete = getLastHoveredItem();
+            addModal.setWord(data[indexToDelete]);
+            addModal.setTitle("Add a word!");
+            addModal.setContent("Add a word");
+            addModal.setVisibilty(true);
+        }
+        else
+        {
+            if (addModal.getSubmit())
+            {
+                std::string word = data[indexToDelete];
+                // delete from tree
+                tree.deleteWord(word);
+                // delete from listbox
+                removeItem(indexToDelete);
+                // delete from dictionary
+                dictionary.deleteFromFile("dict.txt", word);
+                addModal.setVisibilty(false);
+                addModal.resetSubmit();
+            }
+        }
+
+        addModal.handleEvents(e);
         deleteModal.handleEvents(e);
     }
 }

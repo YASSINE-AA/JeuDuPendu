@@ -1,6 +1,6 @@
-#include "deleteModal.hpp"
+#include "addModal.hpp"
 
-void DeleteModal::render()
+void AddModal::render()
 {
     if (!isClosed())
     {
@@ -17,17 +17,21 @@ void DeleteModal::render()
     }
 }
 
-void DeleteModal::setWord(std::string &w)
+void AddModal::setWord(std::string &w)
 {
     word = w;
 }
 
-void DeleteModal::setContent(std::string c)
+void AddModal::setTitle(std::string t) {
+    title = t;
+}
+
+void AddModal::setContent(std::string c)
 {
     content = c;
 }
 
-void DeleteModal::handleEvents(SDL_Event e)
+void AddModal::handleEvents(SDL_Event e)
 {
 
     int mouseX, mouseY;

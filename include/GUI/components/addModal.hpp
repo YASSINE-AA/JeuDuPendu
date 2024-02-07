@@ -1,14 +1,14 @@
-#ifndef DELETEMODAL_HPP
-#define DELETEMODAL_HPP
+#ifndef ADDMODAL_HPP
+#define ADDMODAL_HPP
 
 #include "customComponent.hpp"
 
 #include <vector>
 
-class DeleteModal : public CustomComponent
+class AddModal : public CustomComponent
 {
 public:
-    DeleteModal(Renderer &renderer, States &states, Window &window, TTF_Font *&font, TTF_Font *&contentFont, std::string title, std::string content, BinaryTree tree, Dictionary dictionary)
+    AddModal(Renderer &renderer, States &states, Window &window, TTF_Font *&font, TTF_Font *&contentFont, std::string title, std::string content, BinaryTree tree, Dictionary dictionary)
         : CustomComponent(renderer, states), window(window), font(font), contentFont(contentFont), title(title), content(content), tree(tree), dictionary(dictionary)
     {
         std::tie(width, height) = window.getWindowDimensions();
@@ -21,7 +21,7 @@ public:
 
     int x, y;
     void render() override;
-    void setTitle();
+    void setTitle(std::string t);
     void setContent(std::string c);
     bool isClosed() { return isClosed_; }
     void setVisibilty(bool state) { isClosed_ = !state; }
