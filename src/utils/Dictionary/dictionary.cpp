@@ -36,7 +36,7 @@ void Dictionary::deleteFromFile(const std::string &filename, const std::string &
     if (!tempFile.is_open())
     {
         std::cerr << "Error opening temporary file." << std::endl;
-        inputFile.close(); 
+        inputFile.close();
         return;
     }
 
@@ -81,4 +81,61 @@ void Dictionary::deleteFromFile(const std::string &filename, const std::string &
     }
 
     std::cout << "Word '" << wordToDelete << "' deleted successfully." << std::endl;
+}
+
+
+bool Dictionary::isWordInFile(const std::string &filename, const std::string &wordToCheck)
+{
+    std::ifstream inFile(filename);
+    std::string word;
+
+    if (!inFile.is_open())
+    {
+        std::cerr << "Error: Unable to open file " << filename << std::endl;
+        return false; // Assume word is not found if file cannot be opened
+    }
+
+    while (inFile >> word)
+    {
+
+        if (word == wordToCheck)
+        {
+            inFile.close(); // Close the file
+            return true;    // Word found
+        }
+    }
+
+    // Close the file
+    inFile.close();
+
+    // Word not found
+    return false;
+}
+
+
+
+void Dictionary::addToFile(const std::string &filename, const std::string &wordToAdd)
+{
+
+    std::ofstream outFile(filename, std::ios_base::app);
+
+    if (!outFile.is_open())
+    {
+        std::cerr << "Error: Unable to open file " << filename << std::endl;
+        return;
+    }
+
+    if (isWordInFile(filename, wordToAdd))
+    {
+        std::cout << "Word '" << wordToAdd << "' already exists in the file." << std::endl;
+        outFile.close(); // Close the file
+        return;
+    }
+
+    outFile << wordToAdd << std::endl;
+
+    // Close the file
+    outFile.close();
+
+    std::cout << "Word '" << wordToAdd << "' added to the file successfully." << std::endl;
 }

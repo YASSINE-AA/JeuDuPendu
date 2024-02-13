@@ -14,7 +14,7 @@ public:
     void setText(std::string text);
     void setPosition(int x, int y) override;
     std::string getText();
-    void handleEvents(SDL_Event e) override;
+    void handleEvents(SDL_Event& e) override;
 
 private:
     int x, y;

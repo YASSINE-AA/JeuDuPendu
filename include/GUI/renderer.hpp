@@ -44,6 +44,47 @@ public:
             throw std::runtime_error("SDL_CreateRenderer Error: " + std::string(SDL_GetError()));
         }
     }
+    int getTextHeight(TTF_Font *font)
+    {
+        if (font == nullptr)
+        {
+            // Invalid font, return 0
+            return 0;
+        }
+
+        // Get font metrics
+        int maxHeight = TTF_FontHeight(font);
+        int ascent = TTF_FontAscent(font);
+        int descent = TTF_FontDescent(font);
+
+        // Calculate total text height
+        return maxHeight + ascent + descent;
+    }
+    void getTextSize(TTF_Font *font, const char *text, int *width, int *height)
+    {
+        if (font == nullptr || text == nullptr || width == nullptr || height == nullptr)
+        {
+            // Invalid parameters, return 0 size
+            *width = 0;
+            *height = 0;
+            return;
+        }
+
+        // Use SDL_TTF function to get text size
+        SDL_Surface *surface = TTF_RenderText_Solid(font, text, {255, 255, 255}); // Use any color here
+        if (surface == nullptr)
+        {
+            // Error rendering text, return 0 size
+            *width = 0;
+            *height = 0;
+            return;
+        }
+
+        *width = surface->w;
+        *height = surface->h;
+
+        SDL_FreeSurface(surface);
+    }
 
     void render(SDL_Texture *texture, SDL_Rect *dest)
     {

@@ -9,7 +9,8 @@ class Dictionary
 {
 public:
     void deleteFromFile(const std::string &filename, const std::string &wordToDelete);
-
+    bool isWordInFile(const std::string &filename, const std::string &wordToCheck);
+    void addToFile(const std::string &filename, const std::string &wordToDelete);
     std::vector<std::string> allWords;
     Dictionary(std::string filename)
     {

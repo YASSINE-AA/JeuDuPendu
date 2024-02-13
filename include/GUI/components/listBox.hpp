@@ -2,7 +2,6 @@
 #define LISTBOX_HPP
 
 #include "customComponent.hpp"
-
 #include "deleteModal.hpp"
 #include "addModal.hpp"
 
@@ -17,11 +16,14 @@ public:
         listSize = wordCount * elementSpacing;
         originalSpacing = elementSpacing;
         addButtonDimensions = (SDL_Rect){dimensions.x, dimensions.y, dimensions.w, addPos};
+
+       
     }
 
     void render() override;
     void pushItem(std::string);
     int getLastHoveredItem();
+    void setDeleteButtonRect(const SDL_Rect &deleteButtonRect);
     void removeItem(int idx);
     void listAllItems()
     {
@@ -35,13 +37,14 @@ public:
         dimensions.x = x;
         dimensions.y = y;
     }
-    void handleEvents(SDL_Event e) override;
+    void handleEvents(SDL_Event &e) override;
     void updateParams();
 
 private:
     DeleteModal deleteModal;
     AddModal addModal;
     Dictionary dictionary;
+    bool deleteEnabled = false;
     int indexToDelete;
     std::vector<std::string> data;
     Window window;
@@ -57,6 +60,7 @@ private:
     TTF_Font *font;
     SDL_Rect dimensions;
     SDL_Rect addButtonDimensions;
+    SDL_Rect deleteButtonRect;
     bool renderDeleteModal = false;
 
     int elementSpacing;

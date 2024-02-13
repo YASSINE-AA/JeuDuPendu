@@ -23,7 +23,7 @@ void TextBox::render()
     }
 }
 
-void TextBox::handleEvents(SDL_Event e)
+void TextBox::handleEvents(SDL_Event &e)
 {
     // backspace
     if (e.type == SDL_KEYDOWN)

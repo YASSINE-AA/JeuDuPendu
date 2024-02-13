@@ -13,7 +13,7 @@ public:
     CustomComponent(Renderer &renderer, States &states) : renderer(renderer), states(states) {}
     virtual void render() = 0;
     virtual void setPosition(int x, int y) = 0;
-    virtual void handleEvents(SDL_Event e) = 0;
+    virtual void handleEvents(SDL_Event &e) = 0;
 
 protected:
     Renderer renderer;

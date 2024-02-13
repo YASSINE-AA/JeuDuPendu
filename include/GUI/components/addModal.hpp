@@ -2,43 +2,63 @@
 #define ADDMODAL_HPP
 
 #include "customComponent.hpp"
+#include "textBox.hpp"
 
 #include <vector>
 
 class AddModal : public CustomComponent
 {
 public:
-    AddModal(Renderer &renderer, States &states, Window &window, TTF_Font *&font, TTF_Font *&contentFont, std::string title, std::string content, BinaryTree tree, Dictionary dictionary)
-        : CustomComponent(renderer, states), window(window), font(font), contentFont(contentFont), title(title), content(content), tree(tree), dictionary(dictionary)
+    typedef std::function<void(AddModal &, BinaryTree &, Dictionary &)> CallbackFunction;
+
+    AddModal(Renderer &renderer, States &states, Window &window, TTF_Font *&font, TTF_Font *&contentFont, std::string title, std::string content, BinaryTree tree, Dictionary dictionary);
+
+    void setAddWordCallback(CallbackFunction callback)
     {
-        std::tie(width, height) = window.getWindowDimensions();
-        x = width / 2 - modalW / 2;
-        y = height / 2 - modalH / 2;
-        addBtnRect = (SDL_Rect){x + 15, y+105, 75, 33};
-        deleteBtnRect = (SDL_Rect){x + 100, y+105, 75, 33};
-        closeBtnRect = (SDL_Rect){x + 270, y + 5, 20, 20};
+        addWordCallbackFunction = callback;
     }
 
-    int x, y;
+
+
+    void addWordCallback(AddModal &addModal, BinaryTree &tree, Dictionary &dictionary)
+    {
+        if (addWordCallbackFunction)
+        {
+            addWordCallbackFunction(addModal, tree, dictionary);
+        }
+    }
+    // Render method
     void render() override;
-    void setTitle(std::string t);
-    void setContent(std::string c);
-    bool isClosed() { return isClosed_; }
-    void setVisibilty(bool state) { isClosed_ = !state; }
-    void setWord(std::string &word);
-    std::string getWord() { return word; };
-    void setPosition(int x, int y) override {} // fix this
-    void sendSubmit()
-    {
-        isSubmitSent_ = true;
-    }
 
-    bool getSubmit() {return isSubmitSent_;} 
-    void resetSubmit() {isSubmitSent_ = false;}
-    void handleEvents(SDL_Event e) override;
+    // Setter methods
+    void setTitle(const std::string &t);
+    void setContent(const std::string &c);
+    void setVisibility(bool state);
+    void setWord(const std::string &word);
+
+    // Getter methods
+    bool isClosed() const;
+    SDL_Rect getDimensions() const;
+    std::string getWord() const;
+    std::string getTextBoxValue();
+
+    // Other methods
+    void sendSubmit();
+    void sendUpdate();
+    void resetUpdate();
+    bool getUpdate();
+    void handleEvents(SDL_Event &e) override;
+    void setPosition(int x, int y) override;
 
 private:
+    // Private helper methods
+    void initializePosition();
+    void initializeButtonRects();
+
+    // Member variables
+    int x, y;
     BinaryTree tree;
+    TextBox textBox;
     bool isSubmitSent_ = false;
     Dictionary dictionary;
     std::string word;
@@ -50,12 +70,15 @@ private:
     SDL_Rect deleteBtnRect;
     SDL_Rect addBtnRect;
     SDL_Rect closeBtnRect;
+    SDL_Rect dimensions;
     int modalW = 300;
-    int modalH = 160;
+    int modalH = 200;
     int contentYOffset = 0;
     int contentXOffset = 0;
     std::string title;
     std::string content;
+    CallbackFunction addWordCallbackFunction;
+    bool updateListBox = false;
 };
 
 #endif
