@@ -14,13 +14,11 @@ conditional
 pointer
 reference
 constructor
-destructor
 template
 library
 compiler
 debugging
 array
-string
 vector
 stack
 queue
@@ -32,8 +30,6 @@ algorithm
 search
 sort
 bubble
-quick
-merge
 insertion
 selection
 binary
@@ -54,7 +50,6 @@ framework
 database
 mysql
 mongodb
-sqlite
 postgresql
 authentication
 authorization
@@ -78,9 +73,7 @@ agile
 scrum
 kanban
 git
-repository
 commit
-branch
 conflict
 version
 control
@@ -92,12 +85,8 @@ allocation
 deallocation
 virtual
 override
-interface
 lambda
 function
 object
 oriented
 procedural
-imperative
-declarativehello
-test

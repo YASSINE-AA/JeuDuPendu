@@ -126,14 +126,14 @@ int main()
     playAgainRect.x += 20;
 
     // BG Music
-    // audio.openAudio();
-    // audio.playMusic(audio.loadMusic("assets/bg.mp3"), 20);
+    audio.openAudio();
+    audio.playMusic(audio.loadMusic("assets/bg.mp3"), 20);
 
     // Custom components
     ListBox listBox = ListBox(renderer, states, window, normalFont, contentFont, dictionary, tree, listBounds, 40);
 
     // Sounds
-    // Mix_Chunk *clickChunk = audio.loadWAV("assets/click.mp3");
+    Mix_Chunk *clickChunk = audio.loadWAV("assets/click.mp3");
 
     while (true)
     {
@@ -254,7 +254,7 @@ int main()
                 states.getMousePosition(&x, &y);
                 if (states.isBtnArea(x, y, muteUnmuteRect))
                 {
-                    // audio.playAudioChannel(clickChunk);
+                     audio.playAudioChannel(clickChunk);
                     if (!audio.isMusicPaused())
                     {
                         mutePath = "assets/unmute.bmp";
@@ -272,7 +272,7 @@ int main()
                     if (states.isBtnArea(x, y, menuRect))
                     {
 
-                        //  audio.playAudioChannel(clickChunk);
+                         audio.playAudioChannel(clickChunk);
 
                         gameFinished = false;
                         loadGame = false;
@@ -288,14 +288,14 @@ int main()
                 {
                     if (states.isBtnArea(x, y, startRect))
                     {
-                        //    audio.playAudioChannel(clickChunk);
+                            audio.playAudioChannel(clickChunk);
                         loadOptions = false;
                         loadMainMenu = false;
                         loadSettings = true;
                     }
                     else if (states.isBtnArea(x, y, quitRect))
                     {
-                        //   audio.playAudioChannel(clickChunk);
+                           audio.playAudioChannel(clickChunk);
                         SDL_Delay(1000);
                         audio.cleanUp();
                         renderer.cleanUp();
@@ -304,7 +304,7 @@ int main()
 
                     else if (states.isBtnArea(x, y, optionsRect))
                     {
-                        //   audio.playAudioChannel(clickChunk);
+                           audio.playAudioChannel(clickChunk);
 
                         loadOptions = true;
                         loadMainMenu = false;
@@ -317,7 +317,7 @@ int main()
                 {
                     if (states.isBtnArea(x, y, playAgainRect))
                     {
-                        // audio.playAudioChannel(clickChunk);
+                         audio.playAudioChannel(clickChunk);
                         if (!startNewGame(game, dictionary, placeholder, visited, difficulty))
                         {
                             loadGame = true;
@@ -336,28 +336,28 @@ int main()
                 {
                     if (states.isBtnArea(x, y, easyRect))
                     {
-                        //    audio.playAudioChannel(clickChunk);
+                           audio.playAudioChannel(clickChunk);
                         selectionRect = easyRect;
                         difficulty = 0;
                         game.setDifficulty(0);
                     }
                     else if (states.isBtnArea(x, y, normalRect))
                     {
-                        //    audio.playAudioChannel(clickChunk);
+                          audio.playAudioChannel(clickChunk);
                         selectionRect = normalRect;
                         difficulty = 1;
                         game.setDifficulty(1);
                     }
                     else if (states.isBtnArea(x, y, difficultRect))
                     {
-                        //    audio.playAudioChannel(clickChunk);
+                           audio.playAudioChannel(clickChunk);
                         selectionRect = difficultRect;
                         difficulty = 2;
                         game.setDifficulty(2);
                     }
                     else if (states.isBtnArea(x, y, confirmRect))
                     {
-                        //   audio.playAudioChannel(clickChunk);
+                          audio.playAudioChannel(clickChunk);
                         startNewGame(game, dictionary, placeholder, visited, difficulty);
                         streak = 0;
                         score = 0;
