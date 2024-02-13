@@ -15,7 +15,6 @@
 #include "window.hpp"
 #include "states.hpp"
 
-
 using namespace std;
 
 bool startNewGame(Game &game, Dictionary dictionary, string &placeholder, vector<string> &visited, int difficulty)
@@ -238,7 +237,6 @@ int main()
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
-            
             if (loadOptions)
             {
                 listBox.handleEvents(event);
@@ -279,7 +277,7 @@ int main()
                         gameFinished = false;
                         loadGame = false;
                         loadMainMenu = true;
-                                            loadOptions = false;
+                        loadOptions = false;
 
                         game.reset();
                         streak = 0;
@@ -365,14 +363,6 @@ int main()
                         score = 0;
                         loadGame = true;
                         loadSettings = false;
-                    }
-                }
-                else if (loadOptions)
-                {
-                    listBox.handleEvents(event);
-                    if (states.isBtnArea(x, y, addRect))
-                    {
-                        renderModal = !renderModal;
                     }
                 }
             }

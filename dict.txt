@@ -4,11 +4,9 @@ hangman
 cplusplus
 developer
 software
-engineering
 variable
 language
 inheritance
-polymorphism
 encapsulation
 abstraction
 iteration
@@ -103,10 +101,3 @@ procedural
 imperative
 declarativehello
 test
-dfdf
-dfdfdf
-yesss
-nice
-mouhib
-dfdfdfdfd
-jkk

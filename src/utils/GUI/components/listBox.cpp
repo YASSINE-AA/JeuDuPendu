@@ -95,7 +95,6 @@ void ListBox::handleEvents(SDL_Event &e)
         {
             listPos -= 40; // Défilement vers le bas
         }
-        std::cout << "test" << std::endl;
     }
     else if (e.type == SDL_MOUSEBUTTONDOWN)
     {
@@ -104,7 +103,13 @@ void ListBox::handleEvents(SDL_Event &e)
 
         if (states.isBtnArea(mouseX, mouseY, deleteButtonRect))
         {
-            std::cout << "test" << std::endl;
+            // supression d'un mot
+            int index = getLastHoveredItem();
+            std::string wordToDelete = data[index];
+            removeItem(index);
+            tree.deleteWord(wordToDelete);
+            dictionary.deleteFromFile("dict.txt", wordToDelete);
+
         }
 
         if (addModal.isClosed() && states.isBtnArea(mouseX, mouseY, addButtonDimensions))
