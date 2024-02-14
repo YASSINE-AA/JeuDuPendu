@@ -1,7 +1,18 @@
 #include "dictionary.hpp"
+#include <cstdlib> // Pour la fonction rand
 
-std::vector<std::string> Dictionary::readFromFile(const std::string &filename)
+std::string Dictionary::fileNames[] = {"technologie.txt", "pays.txt", "nature.txt", "metiers.txt", "cuisine.txt"};
+
+std::string Dictionary::generateRandomFilename()
 {
+    int index = rand() % 5; // Choix aléatoire d'un index de 0 à 4
+    return fileNames[index];
+}
+
+std::vector<std::string> Dictionary::readFromFile()
+{
+    std::string filename = generateRandomFilename();
+    selectedFile = filename;
     std::ifstream dictFile(filename);
     std::vector<std::string> words;
 
@@ -20,9 +31,30 @@ std::vector<std::string> Dictionary::readFromFile(const std::string &filename)
     return words;
 }
 
-void Dictionary::deleteFromFile(const std::string &filename, const std::string &wordToDelete)
+std::string Dictionary::getTheme()
 {
-    std::ifstream inputFile(filename);
+    if (selectedFile.length() > 0)
+    {
+        std::vector<std::string> tokens;
+        std::string intermediate;
+        std::stringstream check1(selectedFile);
+        while (getline(check1, intermediate, '.'))
+        {
+            tokens.push_back(intermediate);
+        }
+        return tokens[0]; // theme.txt -> theme
+    }
+    else
+    {
+        // file was not selected.
+        return "";
+    }
+}
+
+void Dictionary::deleteFromFile(const std::string &wordToDelete)
+{
+
+    std::ifstream inputFile(selectedFile);
     if (!inputFile.is_open())
     {
         std::cerr << "Error opening input file." << std::endl;
@@ -60,14 +92,14 @@ void Dictionary::deleteFromFile(const std::string &filename, const std::string &
         return;
     }
 
-    if (std::remove(filename.c_str()) != 0)
+    if (std::remove(selectedFile.c_str()) != 0)
     {
         std::cerr << "Error removing original file." << std::endl;
         std::remove("temp.txt");
         return;
     }
 
-    if (std::rename("temp.txt", filename.c_str()) != 0)
+    if (std::rename("temp.txt", selectedFile.c_str()) != 0)
     {
         std::cerr << "Error renaming temporary file." << std::endl;
         return;
@@ -76,14 +108,14 @@ void Dictionary::deleteFromFile(const std::string &filename, const std::string &
     std::cout << "Word '" << wordToDelete << "' deleted successfully." << std::endl;
 }
 
-bool Dictionary::isWordInFile(const std::string &filename, const std::string &wordToCheck)
+bool Dictionary::isWordInFile(const std::string &wordToCheck)
 {
-    std::ifstream inFile(filename);
+    std::ifstream inFile(selectedFile);
     std::string word;
 
     if (!inFile.is_open())
     {
-        std::cerr << "Error: Unable to open file " << filename << std::endl;
+        std::cerr << "Error: Unable to open file " << selectedFile << std::endl;
         return false;
     }
 
@@ -100,18 +132,18 @@ bool Dictionary::isWordInFile(const std::string &filename, const std::string &wo
     return false;
 }
 
-void Dictionary::addToFile(const std::string &filename, const std::string &wordToAdd)
+void Dictionary::addToFile(const std::string &wordToAdd)
 {
-    if (isWordInFile(filename, wordToAdd))
+    if (isWordInFile(wordToAdd))
     {
         std::cout << "Word '" << wordToAdd << "' already exists in the file." << std::endl;
         return;
     }
 
-    std::ofstream outFile(filename, std::ios_base::app);
+    std::ofstream outFile(selectedFile, std::ios_base::app);
     if (!outFile.is_open())
     {
-        std::cerr << "Error: Unable to open file " << filename << std::endl;
+        std::cerr << "Error: Unable to open file " << selectedFile << std::endl;
         return;
     }
 

@@ -1,23 +1,33 @@
-#include <string>
+#ifndef DICTIONARY_H
+#define DICTIONARY_H
+
+#include <bits/stdc++.h>
 #include <iostream>
-#include <vector>
 #include <fstream>
-#include <cstdlib>
-#include <algorithm>
+#include <vector>
+#include <cstdlib> // Pour la fonction rand
 
 class Dictionary
 {
 public:
-    void deleteFromFile(const std::string &filename, const std::string &wordToDelete);
-    bool isWordInFile(const std::string &filename, const std::string &wordToCheck);
-    void addToFile(const std::string &filename, const std::string &wordToDelete);
     std::vector<std::string> allWords;
-    Dictionary(std::string filename)
+
+    Dictionary()
     {
-        srand((unsigned)time(NULL));
-        allWords = readFromFile(filename);
+        srand(time(nullptr));
+        allWords = readFromFile();
     }
+    static std::string generateRandomFilename();
+
+    std::vector<std::string> readFromFile();
+    void deleteFromFile(const std::string &wordToDelete);
+    bool isWordInFile(const std::string &wordToCheck);
+    void addToFile(const std::string &wordToAdd);
+    std::string getTheme();
 
 private:
-    static std::vector<std::string> readFromFile(const std::string &filename);
+    static std::string fileNames[];
+    std::string selectedFile;
 };
+
+#endif

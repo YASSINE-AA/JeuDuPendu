@@ -165,7 +165,6 @@ int BinaryTree::getNumberOfLeftChildren(BinaryTreeNode *root, int number)
     }
 }
 
-
 std::string BinaryTree::getRandomWordHelper(BinaryTreeNode *root, std::string finalWord)
 {
 
@@ -215,4 +214,51 @@ void BinaryTree::createFromDict(std::vector<std::string> dictionary)
     {
         insertWord(word);
     }
+}
+
+void BinaryTree::insertWord(const std::string &word)
+{
+    insertWordHelper(tete, word);
+}
+
+bool BinaryTree::isWordInTree(const std::string &word)
+{
+    return isWordInTreeHelper(tete, word);
+}
+
+void BinaryTree::deleteWord(const std::string &word)
+{
+    deleteWordHelper(tete, word, tete);
+}
+
+void BinaryTree::printTree()
+{
+    printTreeHelper(tete);
+}
+
+std::string BinaryTree::getRandomWord(int minLength, int maxLength, std::vector<std::string> &visited)
+{
+    std::string word;
+    int tries = 0;
+    while (true)
+    {
+        word = getRandomWordHelper(tete);
+        if (word.length() >= minLength && word.length() <= maxLength && std::find(visited.begin(), visited.end(), word) == visited.end())
+        {
+            std::cout << "found" << std::endl;
+            visited.push_back(word);
+            return word;
+        }
+        else
+        {
+            tries++;
+            if (tries > 1000)
+                return "#";
+        }
+    }
+}
+
+std::vector<int> BinaryTree::getLetterPosition(char letter, const std::string &codeWord)
+{
+    return getLetterPositionHelper(tete, letter, codeWord);
 }

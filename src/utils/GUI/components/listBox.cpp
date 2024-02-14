@@ -76,7 +76,7 @@ void addWordCallback(AddModal &addModal, BinaryTree &tree, Dictionary &dictionar
     std::string wordToAdd = addModal.getTextBoxValue(); // Obtient le mot à ajouter depuis la fenêtre modale
     tree.insertWord(wordToAdd);                         // Insère le mot dans l'arbre binaire
     addModal.setWord(wordToAdd);                        // Définit le mot dans la fenêtre modale
-    dictionary.addToFile("dict.txt", wordToAdd);        // Ajoute le mot au fichier de dictionnaire
+    dictionary.addToFile(wordToAdd);        // Ajoute le mot au fichier de dictionnaire
     addModal.sendUpdate();                              // Envoie une mise à jour à la fenêtre modale
 }
 
@@ -108,7 +108,7 @@ void ListBox::handleEvents(SDL_Event &e)
             std::string wordToDelete = data[index];
             removeItem(index);
             tree.deleteWord(wordToDelete);
-            dictionary.deleteFromFile("dict.txt", wordToDelete);
+            dictionary.deleteFromFile(wordToDelete);
 
         }
 

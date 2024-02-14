@@ -59,6 +59,10 @@
         "stop_token": "cpp",
         "thread": "cpp",
         "cstring": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "any": "cpp",
+        "bitset": "cpp",
+        "future": "cpp",
+        "optional": "cpp"
     }
 }

@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 #include <set>
+#include "binary_tree.hpp"
+#include <gtest/gtest.h> // Include Google Test header
 
 using namespace std;
 
@@ -19,96 +21,22 @@ public:
     int incorrectGuesses;
     set<char> guessedChars;
 
-    Game(BinaryTree tree, int difficulty) : wordTree(tree), correctGuesses(0), incorrectGuesses(0), difficulty(difficulty)
-    {
-        setDifficulty(difficulty);
-    }
+    Game(BinaryTree tree, int difficulty);
 
-    void setWord(string word)
-    {
-        wordToGuess = word;
-    }
+    void setWord(string word);
 
-    void setDifficulty(int level)
-    {
-        difficulty = level;
-        switch (difficulty)
-        {
-        case 0:
-            // easy
-            maxGuesses = 8;
-            break;
+    void setDifficulty(int level);
 
-        case 1:
-            // normal
-            maxGuesses = 5;
-            break;
+    bool isGameOver() const;
 
-        case 2:
-            // difficult
-            maxGuesses = 3;
-            break;
+    bool isGameWon() const;
 
-        default:
-            break;
-        }
-    }
+    void displayWord() const;
 
-    bool isGameOver() const
-    {
-        if (incorrectGuesses == maxGuesses)
-        {
-            return true;
-        }
-        return false;
-    }
+    vector<int> guessLetter(char character);
 
-    bool isGameWon() const
-    {
+    void reset();
 
-        if (correctGuesses == wordToGuess.length())
-        {
-            return true;
-        }
-        return false;
-    }
-
-    void displayWord() const
-    {
-        cout << "The word was: " << wordToGuess << endl;
-    }
-
-    vector<int> guessLetter(char character)
-    {
-        if (guessedChars.find(character) == guessedChars.end())
-        {
-            vector<int> letterPositions = wordTree.getLetterPosition(character, wordToGuess);
-            if (letterPositions.size() > 0)
-            {
-                correctGuesses += letterPositions.size();
-
-                guessedChars.insert(character);
-                return letterPositions;
-            }
-            else
-            {
-                incorrectGuesses++;
-                return {};
-            }
-        }
-        else
-        {
-            return {};
-        }
-    };
-
-    void reset()
-    {
-        
-        correctGuesses = 0;
-        incorrectGuesses = 0;
-        guessedChars.clear();
-    }
 };
 
 #endif

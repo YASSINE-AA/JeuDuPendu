@@ -1,7 +1,6 @@
 #ifndef BINARY_TREE_H
 #define BINARY_TREE_H
 
-#include "binary_tree_node.hpp"
 #include <string>
 #include <set>
 #include <iostream>
@@ -9,6 +8,8 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm> 
+
+#include "binary_tree_node.hpp" // Include necessary headers outside of the guard
 
 class BinaryTree
 {
@@ -18,47 +19,12 @@ public:
         createFromDict(dictionary);
     }
 
-    void insertWord(const std::string &word)
-    {
-        insertWordHelper(tete, word);
-    }
-    bool isWordInTree(const std::string &word)
-    {
-        return isWordInTreeHelper(tete, word);
-    }
-
-    void deleteWord(const std::string &word)
-    {
-        deleteWordHelper(tete, word, tete);
-    }
-
-    void printTree()
-    {
-        printTreeHelper(tete);
-    }
-
-    std::string getRandomWord(int minLength, int maxLength, std::vector<std::string> &visited)
-    {
-        std::string word;
-        int tries = 0;
-        while (true)
-        {
-            word = getRandomWordHelper(tete);
-            if(word.length() >= minLength && word.length() <= maxLength &&  std::find(visited.begin(), visited.end(), word) == visited.end()) {
-                std:: cout << "found" << std::endl;
-                visited.push_back(word);
-                return word;
-            } else {
-                tries ++;
-                if(tries > 1000) return "#";
-            }
-        }
-    }
-
-    std::vector<int> getLetterPosition(char letter, const std::string &codeWord)
-    {
-        return getLetterPositionHelper(tete, letter, codeWord);
-    }
+    void insertWord(const std::string &word);
+    bool isWordInTree(const std::string &word);
+    void deleteWord(const std::string &word);
+    void printTree();
+    std::string getRandomWord(int minLength, int maxLength, std::vector<std::string> &visited);
+    std::vector<int> getLetterPosition(char letter, const std::string &codeWord);
 
 private:
     BinaryTreeNode *tete;
