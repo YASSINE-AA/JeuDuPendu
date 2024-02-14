@@ -245,7 +245,6 @@ std::string BinaryTree::getRandomWord(int minLength, int maxLength, std::vector<
         word = getRandomWordHelper(tete);
         if (word.length() >= minLength && word.length() <= maxLength && std::find(visited.begin(), visited.end(), word) == visited.end())
         {
-            std::cout << "found" << std::endl;
             visited.push_back(word);
             return word;
         }

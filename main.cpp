@@ -81,6 +81,7 @@ int main()
     vector<string> visited = {};
     Dictionary dictionary = Dictionary();
     std::string currentTheme = dictionary.getTheme();
+    std::cout << currentTheme << std::endl;
     BinaryTree tree = BinaryTree(dictionary.allWords);
     string placeholder;
     Game game = Game(tree, difficulty);
@@ -208,9 +209,10 @@ int main()
         {
 
             TTF_SetFontSize(titleFont, 20);
+
             renderer.renderFont(titleFont, ("Hint: the current theme is " + currentTheme).c_str(), (SDL_Color){255, 0, 0}, 105, 155);
             TTF_SetFontSize(titleFont, 30);
-
+            renderer.renderFont(titleFont, ("Tries left: " + std::to_string(game.maxGuesses - game.incorrectGuesses)).c_str(), (SDL_Color){0, 0, 0}, 130, 10);
             renderer.renderFont(titleFont, ("streak: " + std::to_string(streak)).c_str(), (SDL_Color){0, 0, 0}, 350, 0);
             renderer.renderFont(titleFont, ("score: " + std::to_string(score)).c_str(), (SDL_Color){0, 0, 0}, 350, 25);
 

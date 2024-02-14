@@ -1,5 +1,6 @@
 medecin
 enseignant
+psy
 artiste
 agriculteur
 policier
@@ -19,7 +20,9 @@ musicien
 electricien
 jardinier
 banquier
-psychologue
+chef 
+macon 
+prof
 coiffeur
 archeologue
 pilote
